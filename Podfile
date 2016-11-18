@@ -28,6 +28,7 @@ end
 
 def also_xcode_pods
     pods_for_errbody
+    pod 'SwiftSafe', :path => './SwiftSafe/' # Fake lib version tag. Original v0.1 was removed completely
     pod 'XcodeServerSDK', '~> 0.7.1'
     pod 'ekgclient', '~> 0.3.2'
 end

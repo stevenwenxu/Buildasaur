@@ -48,6 +48,7 @@ DEPENDENCIES:
   - OAuthSwift
   - ReactiveCocoa (~> 4.0.1)
   - Sparkle
+  - SwiftSafe (from `./SwiftSafe/`)
   - XcodeServerSDK (~> 0.7.1)
 
 EXTERNAL SOURCES:
@@ -56,6 +57,8 @@ EXTERNAL SOURCES:
   Nimble:
     :commit: 1730543fcd8b7d7258a3270bb6d3118921d46f9d
     :git: https://github.com/Quick/Nimble.git
+  SwiftSafe:
+    :path: ./SwiftSafe/
 
 CHECKOUT OPTIONS:
   Nimble:
@@ -81,6 +84,6 @@ SPEC CHECKSUMS:
   SwiftSafe: 77ffd12b02678790bec1ef56a2d14ec5036f1fd6
   XcodeServerSDK: 7b647f3d660a82c2d9f5baa5af81e91352006929
 
-PODFILE CHECKSUM: c44b614c43b148af056f2b381fc709d6518dcd87
+PODFILE CHECKSUM: 93599e4fc827218a38d86076d7f7697c9c06e90d
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.1
