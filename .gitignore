@@ -20,6 +20,8 @@ DerivedData
 **/report.xml
 fastlane/test_output/
 
+app/*
+
 # CocoaPods
 #
 # We recommend against adding the Pods directory to your .gitignore. However

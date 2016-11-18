@@ -334,7 +334,7 @@ class Migrator_v2_v3: MigratorType {
             
             let id = try! d.stringForKey("id")
             let token = try! d.stringForKey("github_token")
-            let auth = ProjectAuthenticator(service: .GitHub, username: "GIT", type: .PersonalToken, secret: token)
+            let auth = ProjectAuthenticator(service: GitHubService(), username: "GIT", type: .PersonalToken, secret: token)
             let formattedToken = auth.toString()
 
             let passphrase = d.optionalStringForKey("ssh_passphrase")

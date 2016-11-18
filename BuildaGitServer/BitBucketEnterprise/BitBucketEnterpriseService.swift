@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Keys
 
 public struct BitBucketEnterpriseService: GitService {
     public let _baseURL: NSURL

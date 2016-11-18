@@ -19,7 +19,7 @@ class BitBucketEnterpriseRepo: BitBucketEnterpriseEntity, RepoType {
         
         //split with forward slash, the last two comps are the repo
         //create a proper ssh url for bitbucket enterprise here
-        let clone = json
+        let clone = try! json
             .dictionaryForKey("links")
             .arrayForKey("clone")
         let ssh:[String:String] = clone[0] as! [String : String]

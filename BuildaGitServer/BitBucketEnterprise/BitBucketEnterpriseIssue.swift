@@ -14,7 +14,7 @@ class BitBucketEnterpriseIssue: BitBucketEnterpriseEntity, IssueType {
     
     required init(json: NSDictionary) {
         
-        self.number = json.intForKey("id")
+        self.number = try! json.intForKey("id")
         
         super.init(json: json)
     }

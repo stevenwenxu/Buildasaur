@@ -12,8 +12,6 @@ import Keys
 import ReactiveCocoa
 import Result
 
-typealias BuildasaurKeys = BuildasaurxcodeprojKeys
-
 public enum GitServiceType: String {
     case GitHub = "github"
     case BitBucket = "bitbucket"

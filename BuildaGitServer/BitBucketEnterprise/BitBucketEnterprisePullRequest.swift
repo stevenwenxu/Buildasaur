@@ -16,10 +16,10 @@ class BitBucketEnterprisePullRequest: BitBucketEnterpriseIssue, PullRequestType 
     
     required init(json: NSDictionary) {
         
-        self.title = json.stringForKey("title")
+        self.title = try! json.stringForKey("title")
         
-        self.source = BitBucketEnterprisePullRequestBranch(json: json.dictionaryForKey("fromRef"))
-        self.destination = BitBucketEnterprisePullRequestBranch(json: json.dictionaryForKey("toRef"))
+        self.source = BitBucketEnterprisePullRequestBranch(json: try! json.dictionaryForKey("fromRef"))
+        self.destination = BitBucketEnterprisePullRequestBranch(json: try! json.dictionaryForKey("toRef"))
         
         super.init(json: json)
     }

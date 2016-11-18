@@ -316,7 +316,7 @@ extension BitBucketServer {
                 let refreshToken = try payload.stringForKey("refresh_token")
                 let secret = [refreshToken, accessToken].joinWithSeparator(":")
                 
-                let newAuth = ProjectAuthenticator(service: .BitBucket, username: "GIT", type: .OAuthToken, secret: secret)
+                let newAuth = ProjectAuthenticator(service: BitBucketService(), username: "GIT", type: .OAuthToken, secret: secret)
                 self.endpoints.auth.value = newAuth
                 completion(nil)
             } catch {

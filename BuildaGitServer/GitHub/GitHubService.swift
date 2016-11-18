@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Keys
 
 public struct GitHubService: GitService {
     

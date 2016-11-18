@@ -24,11 +24,11 @@ class BitBucketEnterpriseStatus: BitBucketEnterpriseEntity, StatusType {
     
     required init(json: NSDictionary) {
         
-        self.bbState = BitBucketEnterpriseState(rawValue: json.stringForKey("state"))!
-        self.key = json.stringForKey("key")
+        self.bbState = BitBucketEnterpriseState(rawValue: try! json.stringForKey("state"))!
+        self.key = try! json.stringForKey("key")
         self.name = json.optionalStringForKey("name")
         self.description = json.optionalStringForKey("description")
-        self.targetUrl = json.stringForKey("url")
+        self.targetUrl = try! json.stringForKey("url")
         
         super.init(json: json)
     }

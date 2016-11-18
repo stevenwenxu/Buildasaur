@@ -15,10 +15,10 @@ class BitBucketEnterprisePullRequestBranch : BitBucketEnterpriseEntity {
     let repo: BitBucketEnterpriseRepo
     
     required init(json: NSDictionary) {
-        let name = json.stringForKey("id").stringByReplacingOccurrencesOfString("refs/heads/", withString: "")
+        let name = try! json.stringForKey("id").stringByReplacingOccurrencesOfString("refs/heads/", withString: "")
         self.branch = name
-        self.commit = json.stringForKey("latestCommit")
-        self.repo = BitBucketEnterpriseRepo(json: json.dictionaryForKey("repository"))
+        self.commit = try! json.stringForKey("latestCommit")
+        self.repo = BitBucketEnterpriseRepo(json: try! json.dictionaryForKey("repository"))
         
         super.init(json: json)
     }

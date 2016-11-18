@@ -74,12 +74,18 @@ extension WorkspaceMetadata {
         var checkoutType: CheckoutType?
         var gitService: GitService?
 
-        if projectURLString.containsString(GitService.GitHub.hostname()) {
-            gitService = .GitHub
-        } else if projectURLString.containsString(GitService.BitBucket.hostname()) {
-            gitService = .BitBucket
+        if projectURLString.containsString(GitHubService().hostname()) {
+            gitService = GitHubService()
+        } else if projectURLString.containsString(BitBucketService().hostname()) {
+            gitService = BitBucketService()
         } else {
-            Log.error("This git service is not yet supported.")
+            // TODO: Show another screen so that users can choose. For now we're just assuming it's probably BitBucket Server. Once there's support for other servers (such as GitHub Enterprise), this won't work anymore.
+            if (url.scheme == "ssh") {
+                gitService = BitBucketEnterpriseService(baseURL: projectURLString)
+            }
+            else {
+                Log.error("This git service is not yet supported.")
+            }
         }
 
         switch url.scheme {
@@ -90,7 +96,7 @@ extension WorkspaceMetadata {
             }
         case "ssh":
             checkoutType = .SSH
-        case GitService.GitHub.hostname(), GitService.BitBucket.hostname():
+        case GitHubService().hostname(), BitBucketService().hostname():
             checkoutType = .SSH
         default:
             Log.error("The \(url.scheme) scheme is not yet supported.")

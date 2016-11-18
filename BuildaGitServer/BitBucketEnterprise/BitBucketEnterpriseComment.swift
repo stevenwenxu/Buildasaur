@@ -14,7 +14,7 @@ class BitBucketEnterpriseComment: BitBucketEnterpriseEntity, CommentType {
     
     required init(json: NSDictionary) {
         
-        self.body = json
+        self.body = try! json
             .optionalDictionaryForKey("content")?
             .stringForKey("raw") ?? json.stringForKey("content")
         
