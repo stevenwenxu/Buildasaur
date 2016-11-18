@@ -29,7 +29,13 @@ class BotNaming {
     }
     
     class func prefixForBuildaBotInRepoWithName(repoName: String) -> String {
-        return "\(self.prefixForBuildaBot()) [\(repoName)]"
+        let repoNameComponents = repoName.componentsSeparatedByString("/")
+        if repoNameComponents.count > 0 {
+            // For BitBucket Server, repoName will be "<project>/<repo>"
+            return "\(self.prefixForBuildaBot()) [\(repoNameComponents[1])]"
+        } else {
+            return "\(self.prefixForBuildaBot()) [\(repoName)]"
+        }
     }
     
     class func prefixForBuildaBot() -> String {

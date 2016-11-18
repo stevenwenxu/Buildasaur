@@ -51,6 +51,12 @@ class ProjectViewController: ConfigEditViewController {
     @IBOutlet weak var loginButton: NSButton!
     @IBOutlet weak var useTokenButton: NSButton!
     @IBOutlet weak var logoutButton: NSButton!
+    @IBOutlet weak var usernameTextField: NSTextField!
+    @IBOutlet weak var usernameStackView: NSStackView!
+    @IBOutlet weak var passwordTextField: NSTextField!
+    @IBOutlet weak var passwordStackView: NSStackView!
+    
+    private var serviceType: GitServiceType!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,6 +86,8 @@ class ProjectViewController: ConfigEditViewController {
         self.selectSSHPublicKeyButton.rac_enabled <~ editing
         self.sshPassphraseTextField.rac_enabled <~ editing
         self.tokenTextField.rac_enabled <~ editing
+        self.usernameTextField.rac_enabled <~ editing
+        self.passwordTextField.rac_enabled <~ editing
         
         //editable data
         let privateKey = self.privateKeyUrl.producer
@@ -103,6 +111,8 @@ class ProjectViewController: ConfigEditViewController {
             let pub = $0.publicSSHKeyPath
             self?.publicKeyUrl.value = pub.isEmpty ? nil : NSURL(fileURLWithPath: pub)
             self?.sshPassphraseTextField.stringValue = $0.sshPassphrase ?? ""
+            self?.usernameTextField.stringValue = $0.username ?? ""
+            self?.passwordTextField.stringValue = $0.password ?? ""
         }
         
         let meta = proj.map { $0.workspaceMetadata! }
@@ -121,10 +131,32 @@ class ProjectViewController: ConfigEditViewController {
                     if token.isEmpty {
                         self?.authenticator.value = nil
                     } else {
-                        self?.authenticator.value = ProjectAuthenticator(service: .GitHub, username: "GIT", type: .PersonalToken, secret: token)
+                        self?.authenticator.value = ProjectAuthenticator(service: GitHubService(), username: "GIT", type: .PersonalToken, secret: token)
                     }
                 }
         }
+        
+        let service = self.project.workspaceMetadata!.service
+        
+        if service.serviceType() == .BitBucketEnterprise {
+            combineLatest(
+                self.usernameTextField.rac_text,
+                self.passwordTextField.rac_text
+                )
+                .startWithNext { [weak self] username, password in
+                    if username.isEmpty || password.isEmpty {
+                        self?.authenticator.value = nil
+                    } else {
+                        // TODO: We're just assuming right now that this is a BitBucketEnterprise service. In the future there needs to be a way to specify if it's BitBucket Server, Github Enterprise, GitLab, etc.
+                        self?.authenticator.value = ProjectAuthenticator(
+                            service: service,
+                            username: username,
+                            type: .Basic,
+                            secret: password)
+                    }
+            }
+        }
+        
         
         //fill data in
         self.projectNameLabel.rac_stringValue <~ meta.map { $0.projectName }
@@ -136,14 +168,16 @@ class ProjectViewController: ConfigEditViewController {
         let publicKeyVoid = publicKey.map { _ in }
         let githubTokenVoid = self.tokenTextField.rac_text.map { _ in }
         let sshPassphraseVoid = self.sshPassphraseTextField.rac_text.map { _ in }
-        let all = combineLatest(privateKeyVoid, publicKeyVoid, githubTokenVoid, sshPassphraseVoid)
+        let usernameVoid = self.usernameTextField.rac_text.map { _ in }
+        let passwordVoid = self.passwordTextField.rac_text.map { _ in }
+        let all = combineLatest(privateKeyVoid, publicKeyVoid, githubTokenVoid, sshPassphraseVoid, usernameVoid, passwordVoid)
         all.startWithNext { [weak self] _ in self?.availabilityCheckState.value = .Unchecked }
         
         //listen for changes
         let privateKeyValid = privateKey.map { $0 != nil }
         let publicKeyValid = publicKey.map { $0 != nil }
         let githubTokenValid = self.authenticator.producer.map { $0 != nil }
-        
+
         let allInputs = combineLatest(privateKeyValid, publicKeyValid, githubTokenValid)
         let valid = allInputs.map { $0.0 && $0.1 && $0.2 }
         self.valid = valid
@@ -165,8 +199,9 @@ class ProjectViewController: ConfigEditViewController {
         self.serviceLogo.image = NSImage(named: service.logoName())
         
         let alreadyHasAuth = auth != nil
-
-        switch service {
+        
+        self.serviceType = service.serviceType()
+        switch service.serviceType() {
         case .GitHub:
             if let auth = auth where auth.type == .PersonalToken && !auth.secret.isEmpty {
                 self.tokenTextField.stringValue = auth.secret
@@ -174,14 +209,26 @@ class ProjectViewController: ConfigEditViewController {
                 self.tokenTextField.stringValue = ""
             }
             self.useTokenButton.hidden = alreadyHasAuth
+            self.loginButton.hidden = alreadyHasAuth
+            self.logoutButton.hidden = !alreadyHasAuth
+            self.usernameStackView.hidden = true
+            self.passwordStackView.hidden = true
         case .BitBucket:
             self.useTokenButton.hidden = true
+            self.loginButton.hidden = alreadyHasAuth
+            self.logoutButton.hidden = !alreadyHasAuth
+            self.usernameStackView.hidden = true
+            self.passwordStackView.hidden = true
+        case .BitBucketEnterprise:
+            self.loginButton.hidden = true
+            self.logoutButton.hidden = true
+            self.useTokenButton.hidden = true
+            self.usernameStackView.hidden = false
+            self.passwordStackView.hidden = false
         }
         
-        self.loginButton.hidden = alreadyHasAuth
-        self.logoutButton.hidden = !alreadyHasAuth
         
-        let showTokenField = userWantsTokenAuth && service == .GitHub && (auth?.type == .PersonalToken || auth == nil)
+        let showTokenField = userWantsTokenAuth && service.serviceType() == .GitHub && (auth?.type == .PersonalToken || auth == nil)
         self.tokenStackView.hidden = !showTokenField
     }
     
@@ -241,6 +288,7 @@ class ProjectViewController: ConfigEditViewController {
     func pullConfigFromUI() -> ProjectConfig? {
         
         let sshPassphrase = self.sshPassphraseTextField.stringValue.nonEmpty()
+        
         guard
             let privateKeyPath = self.privateKeyUrl.value?.path,
             let publicKeyPath = self.publicKeyUrl.value?.path,
@@ -253,6 +301,8 @@ class ProjectViewController: ConfigEditViewController {
         config.sshPassphrase = sshPassphrase
         config.privateSSHKeyPath = privateKeyPath
         config.publicSSHKeyPath = publicKeyPath
+        config.username = self.usernameTextField.stringValue.nonEmpty()
+        config.password = self.passwordTextField.stringValue.nonEmpty()
         
         do {
             try self.storageManager.addProjectConfig(config)
@@ -302,17 +352,22 @@ class ProjectViewController: ConfigEditViewController {
         self.userWantsTokenAuth.value = false
         
         let service = self.project.workspaceMetadata!.service
-        self.serviceAuthenticator.getAccess(service) { (auth, error) -> () in
+        
+        if service.serviceType() == .BitBucketEnterprise {
             
-            guard let auth = auth else {
-                //TODO: show UI error that login failed
-                UIUtils.showAlertWithError(Error.withInfo("Failed to log in, please try again", internalError: (error as! NSError), userInfo: nil))
-                self.authenticator.value = nil
-                return
+        } else {
+            self.serviceAuthenticator.getAccess(service) { (auth, error) -> () in
+                
+                guard let auth = auth else {
+                    //TODO: show UI error that login failed
+                    UIUtils.showAlertWithError(Error.withInfo("Failed to log in, please try again", internalError: (error as! NSError), userInfo: nil))
+                    self.authenticator.value = nil
+                    return
+                }
+                
+                //we have been authenticated, hooray!
+                self.authenticator.value = auth
             }
-            
-            //we have been authenticated, hooray!
-            self.authenticator.value = auth
         }
     }
     
@@ -326,6 +381,8 @@ class ProjectViewController: ConfigEditViewController {
         self.authenticator.value = nil
         self.userWantsTokenAuth.value = false
         self.tokenTextField.rac_stringValue.value = ""
+        self.usernameTextField.rac_stringValue.value = ""
+        self.passwordTextField.rac_stringValue.value = ""
     }
     
 }

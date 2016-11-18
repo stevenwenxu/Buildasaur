@@ -29,6 +29,8 @@ public class StorageManager {
     
     let tokenKeychain = SecurePersistence.sourceServerTokenKeychain()
     let passphraseKeychain = SecurePersistence.sourceServerPassphraseKeychain()
+    let usernameKeychain = SecurePersistence.sourceServerUserNameKeychain()
+    let passwordKeychain = SecurePersistence.sourceServerPasswordKeychain()
     let serverConfigKeychain = SecurePersistence.xcodeServerPasswordKeychain()
     
     private let persistence: Persistence
@@ -178,6 +180,8 @@ public class StorageManager {
         //load server token & ssh passphrase from keychain
         let tokenKeychain = self.tokenKeychain
         let passphraseKeychain = self.passphraseKeychain
+        let usernameKeychain = self.usernameKeychain
+        let passwordKeychain = self.passwordKeychain
         self.projectConfigs.value = allProjects
             .map {
                 (_p: ProjectConfig) -> ProjectConfig in
@@ -188,6 +192,8 @@ public class StorageManager {
                 }
                 p.serverAuthentication = auth
                 p.sshPassphrase = passphraseKeychain.read(p.keychainKey())
+                p.username = usernameKeychain.read(p.keychainKey())
+                p.password = passwordKeychain.read(p.keychainKey())
                 return p
             }.dictionarifyWithKey { $0.id }
         
@@ -244,11 +250,16 @@ public class StorageManager {
         let projectConfigs: NSArray = Array(configs.values).map { $0.jsonify() }
         let tokenKeychain = SecurePersistence.sourceServerTokenKeychain()
         let passphraseKeychain = SecurePersistence.sourceServerPassphraseKeychain()
+        let usernameKeychain = SecurePersistence.sourceServerUserNameKeychain()
+        let passwordKeychain = SecurePersistence.sourceServerPasswordKeychain()
+        
         configs.values.forEach {
             if let auth = $0.serverAuthentication {
                 tokenKeychain.writeIfNeeded($0.keychainKey(), value: auth.toString())
             }
             passphraseKeychain.writeIfNeeded($0.keychainKey(), value: $0.sshPassphrase)
+            usernameKeychain.writeIfNeeded($0.keychainKey(), value: $0.username)
+            passwordKeychain.writeIfNeeded($0.keychainKey(), value: $0.password)
         }
         self.persistence.saveArray("Projects.json", items: projectConfigs)
     }

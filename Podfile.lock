@@ -8,7 +8,7 @@ PODS:
   - DVR (0.2.1-snap1)
   - ekgclient (0.3.2):
     - Alamofire (= 2.0.0-beta.3)
-  - Fabric (1.6.6)
+  - Fabric (1.6.7)
   - Ji (1.2.0):
     - Ji/Ji (= 1.2.0)
   - Ji/Ji (1.2.0):
@@ -69,7 +69,7 @@ SPEC CHECKSUMS:
   CryptoSwift: b2bf37b8e7cc6d682ef3365cb966bc5ae5174aa5
   DVR: 05cb292d3f71608e0a35afa85d475cbb56e37132
   ekgclient: 615e09c9193ea1fa1ef2850863a97a218b161aa4
-  Fabric: 1abc1e59f11fa39ede6f690ef7309d8563e3ec59
+  Fabric: caf7580c725e64db144f610ac65cd60956911dc7
   Ji: ddebb22f9ac445db6e884b66f78ea74fb135fdb7
   KeychainAccess: 9b7e49e48277e329b1b3195e54697ed313d30acf
   Keys: 9c35bf00f612ee1d48556f4a4b9b4551e224e90f

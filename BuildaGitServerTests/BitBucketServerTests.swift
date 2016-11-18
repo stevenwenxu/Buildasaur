@@ -33,7 +33,7 @@ class BitBucketServerTests: XCTestCase {
         
         let session = DVR.Session(cassetteName: name, testBundle: NSBundle(forClass: self.classForCoder))
         let http = HTTP(session: session)
-        self.bitbucket = GitServerFactory.server(.BitBucket, auth: nil, http: http)
+        self.bitbucket = GitServerFactory.server(BitBucketService(), auth: nil, http: http)
     }
     
     func testGetPullRequests() {

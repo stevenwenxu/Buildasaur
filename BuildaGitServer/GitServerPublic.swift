@@ -12,70 +12,35 @@ import Keys
 import ReactiveCocoa
 import Result
 
-public enum GitService: String {
+typealias BuildasaurKeys = BuildasaurxcodeprojKeys
+
+public enum GitServiceType: String {
     case GitHub = "github"
     case BitBucket = "bitbucket"
-//    case GitLab = "gitlab"
-    
-    public func prettyName() -> String {
-        switch self {
-        case .GitHub: return "GitHub"
-        case .BitBucket: return "BitBucket"
-        }
-    }
-    
-    public func logoName() -> String {
-        switch self {
-        case .GitHub: return "github"
-        case .BitBucket: return "bitbucket"
-        }
-    }
-    
-    public func hostname() -> String {
-        switch self {
-        case .GitHub: return "github.com"
-        case .BitBucket: return "bitbucket.org"
-        }
-    }
-    
-    public func authorizeUrl() -> String {
-        switch self {
-        case .GitHub: return "https://github.com/login/oauth/authorize"
-        case .BitBucket: return "https://bitbucket.org/site/oauth2/authorize"
-        }
-    }
-    
-    public func accessTokenUrl() -> String {
-        switch self {
-        case .GitHub: return "https://github.com/login/oauth/access_token"
-        case .BitBucket: return "https://bitbucket.org/site/oauth2/access_token"
-        }
-    }
-    
-    public func serviceKey() -> String {
-        switch self {
-        case .GitHub: return BuildasaurKeys().gitHubAPIClientId()
-        case .BitBucket: return BuildasaurKeys().bitBucketAPIClientId()
-        }
-    }
-    
-    public func serviceSecret() -> String {
-        switch self {
-        case .GitHub: return BuildasaurKeys().gitHubAPIClientSecret()
-        case .BitBucket: return BuildasaurKeys().bitBucketAPIClientSecret()
-        }
-    }
+    case BitBucketEnterprise = "bitbucketenterprise"
 }
 
-public class GitServer : HTTPServer {
+public protocol GitService {
+    func serviceType() -> GitServiceType
+    func prettyName() -> String
+    func logoName() -> String
+    func hostname() -> String
+    func baseURL() -> NSURL
+    func authorizeUrl() -> String
+    func accessTokenUrl() -> String
+    func serviceKey() -> String
+    func serviceSecret() -> String
+}
+
+public class GitServer<T: GitService> : HTTPServer {
     
-    let service: GitService
+    let service: T
     
     public func authChangedSignal() -> Signal<ProjectAuthenticator?, NoError> {
         return Signal.never
     }
     
-    init(service: GitService, http: HTTP? = nil) {
+    init(service: T, http: HTTP? = nil) {
         self.service = service
         super.init(http: http)
     }

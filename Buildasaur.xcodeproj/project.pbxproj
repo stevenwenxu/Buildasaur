@@ -158,6 +158,19 @@
 		3AF1B1241AAC7CA500917EF3 /* SyncerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF1B1231AAC7CA500917EF3 /* SyncerViewController.swift */; };
 		6DF2EAFA1D1C6DDF006FC52B /* SelectTriggerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF2EAF91D1C6DDF006FC52B /* SelectTriggerViewController.swift */; };
 		6DF2EB301D1EB0F0006FC52B /* ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF2EB2F1D1EB0F0006FC52B /* ExtensionTests.swift */; };
+		56028E551CC5FA79009303B5 /* BitBucketEnterpriseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56028E541CC5FA79009303B5 /* BitBucketEnterpriseService.swift */; };
+		56028E571CC5FAD0009303B5 /* BitBucketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56028E561CC5FAD0009303B5 /* BitBucketService.swift */; };
+		56028E591CC5FAFC009303B5 /* GitHubService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56028E581CC5FAFC009303B5 /* GitHubService.swift */; };
+		5674133A1C8EB4430004E70B /* BitBucketEnterpriseEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567413371C8EB4430004E70B /* BitBucketEnterpriseEndpoints.swift */; };
+		5674133B1C8EB4430004E70B /* BitBucketEnterpriseRateLimit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567413381C8EB4430004E70B /* BitBucketEnterpriseRateLimit.swift */; };
+		5674133C1C8EB4430004E70B /* BitBucketEnterpriseServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567413391C8EB4430004E70B /* BitBucketEnterpriseServer.swift */; };
+		567413441C8EB45A0004E70B /* BitBucketEnterpriseComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5674133D1C8EB45A0004E70B /* BitBucketEnterpriseComment.swift */; };
+		567413451C8EB45A0004E70B /* BitBucketEnterpriseEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5674133E1C8EB45A0004E70B /* BitBucketEnterpriseEntity.swift */; };
+		567413461C8EB45A0004E70B /* BitBucketEnterpriseIssue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5674133F1C8EB45A0004E70B /* BitBucketEnterpriseIssue.swift */; };
+		567413471C8EB45A0004E70B /* BitBucketEnterprisePullRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567413401C8EB45A0004E70B /* BitBucketEnterprisePullRequest.swift */; };
+		567413481C8EB45A0004E70B /* BitBucketEnterprisePullRequestBranch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567413411C8EB45A0004E70B /* BitBucketEnterprisePullRequestBranch.swift */; };
+		567413491C8EB45A0004E70B /* BitBucketEnterpriseRepo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567413421C8EB45A0004E70B /* BitBucketEnterpriseRepo.swift */; };
+		5674134A1C8EB45A0004E70B /* BitBucketEnterpriseStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567413431C8EB45A0004E70B /* BitBucketEnterpriseStatus.swift */; };
 		775501D89C0E4D209E6EE5D0 /* Pods_BuildaGitServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9139F7877761955F17C535E /* Pods_BuildaGitServer.framework */; };
 		785688011CDD4843009EEB72 /* WorkspaceMetadataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785688001CDD4843009EEB72 /* WorkspaceMetadataTests.swift */; };
 		D59A4C6EEE903468E69AEA81 /* Pods_BuildaKitTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EC43508E8A4F9D6E5ED0126 /* Pods_BuildaKitTests.framework */; };
@@ -383,6 +396,19 @@
 		44E8AF72E61B7A15D6E70352 /* Pods-BuildaGitServer.testing.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BuildaGitServer.testing.xcconfig"; path = "Pods/Target Support Files/Pods-BuildaGitServer/Pods-BuildaGitServer.testing.xcconfig"; sourceTree = "<group>"; };
 		4A4FCE02D4B5A180AAF85C12 /* Pods-BuildaGitServer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BuildaGitServer.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BuildaGitServer/Pods-BuildaGitServer.debug.xcconfig"; sourceTree = "<group>"; };
 		4EC43508E8A4F9D6E5ED0126 /* Pods_BuildaKitTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BuildaKitTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		56028E541CC5FA79009303B5 /* BitBucketEnterpriseService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseService.swift; sourceTree = "<group>"; };
+		56028E561CC5FAD0009303B5 /* BitBucketService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BitBucketService.swift; path = BitBucket/BitBucketService.swift; sourceTree = "<group>"; };
+		56028E581CC5FAFC009303B5 /* GitHubService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitHubService.swift; sourceTree = "<group>"; };
+		567413371C8EB4430004E70B /* BitBucketEnterpriseEndpoints.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseEndpoints.swift; sourceTree = "<group>"; };
+		567413381C8EB4430004E70B /* BitBucketEnterpriseRateLimit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseRateLimit.swift; sourceTree = "<group>"; };
+		567413391C8EB4430004E70B /* BitBucketEnterpriseServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseServer.swift; sourceTree = "<group>"; };
+		5674133D1C8EB45A0004E70B /* BitBucketEnterpriseComment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseComment.swift; sourceTree = "<group>"; };
+		5674133E1C8EB45A0004E70B /* BitBucketEnterpriseEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseEntity.swift; sourceTree = "<group>"; };
+		5674133F1C8EB45A0004E70B /* BitBucketEnterpriseIssue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseIssue.swift; sourceTree = "<group>"; };
+		567413401C8EB45A0004E70B /* BitBucketEnterprisePullRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterprisePullRequest.swift; sourceTree = "<group>"; };
+		567413411C8EB45A0004E70B /* BitBucketEnterprisePullRequestBranch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterprisePullRequestBranch.swift; sourceTree = "<group>"; };
+		567413421C8EB45A0004E70B /* BitBucketEnterpriseRepo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseRepo.swift; sourceTree = "<group>"; };
+		567413431C8EB45A0004E70B /* BitBucketEnterpriseStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitBucketEnterpriseStatus.swift; sourceTree = "<group>"; };
 		6A0C42D6343BC2A4C4C899AB /* Pods-BuildaHeartbeatKit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BuildaHeartbeatKit.release.xcconfig"; path = "Pods/Target Support Files/Pods-BuildaHeartbeatKit/Pods-BuildaHeartbeatKit.release.xcconfig"; sourceTree = "<group>"; };
 		6DF2EAF91D1C6DDF006FC52B /* SelectTriggerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectTriggerViewController.swift; sourceTree = "<group>"; };
 		6DF2EB2F1D1EB0F0006FC52B /* ExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExtensionTests.swift; sourceTree = "<group>"; };
@@ -569,8 +595,9 @@
 			isa = PBXGroup;
 			children = (
 				3A6355DE1A3BC77500545BF9 /* Entities */,
-				3A6355D71A3BBCD200545BF9 /* GitHubEndpoints.swift */,
+				56028E581CC5FAFC009303B5 /* GitHubService.swift */,
 				3A58B1521A3B967C003E0266 /* GitHubServer.swift */,
+				3A6355D71A3BBCD200545BF9 /* GitHubEndpoints.swift */,
 				3A3BDC1E1AF6D34900D2CD99 /* GitHubRateLimit.swift */,
 			);
 			name = GitHub;
@@ -703,6 +730,7 @@
 				3AAF6F031A3CE66A00C657FB /* GitServerPublic.swift */,
 				3A35CD6B1BE96E880088D57A /* Base */,
 				3ABF0ADC1C51A47A00882A40 /* BitBucket */,
+				567413351C8EB3C00004E70B /* BitBucketEnterprise */,
 				3A6355DB1A3BBDB000545BF9 /* GitHub */,
 				3AAF6EE61A3CE5BA00C657FB /* Supporting Files */,
 				3A0BE6E11C5A753F00AC9C57 /* Utils */,
@@ -742,6 +770,7 @@
 			children = (
 				3ABF0ADD1C51A48C00882A40 /* Entities */,
 				3A7AF6111C592023000FD726 /* BitBucketServer.swift */,
+				56028E561CC5FAD0009303B5 /* BitBucketService.swift */,
 				3A7AF6131C592055000FD726 /* BitBucketEndpoints.swift */,
 				3A7AF61F1C592B2C000FD726 /* BitBucketRateLimit.swift */,
 			);
@@ -921,6 +950,32 @@
 				A588086CCA23190FC2B378E5 /* Pods-Buildasaur.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		567413351C8EB3C00004E70B /* BitBucketEnterprise */ = {
+			isa = PBXGroup;
+			children = (
+				567413361C8EB4310004E70B /* Entities */,
+				567413391C8EB4430004E70B /* BitBucketEnterpriseServer.swift */,
+				56028E541CC5FA79009303B5 /* BitBucketEnterpriseService.swift */,
+				567413371C8EB4430004E70B /* BitBucketEnterpriseEndpoints.swift */,
+				567413381C8EB4430004E70B /* BitBucketEnterpriseRateLimit.swift */,
+			);
+			path = BitBucketEnterprise;
+			sourceTree = "<group>";
+		};
+		567413361C8EB4310004E70B /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				5674133D1C8EB45A0004E70B /* BitBucketEnterpriseComment.swift */,
+				5674133E1C8EB45A0004E70B /* BitBucketEnterpriseEntity.swift */,
+				5674133F1C8EB45A0004E70B /* BitBucketEnterpriseIssue.swift */,
+				567413401C8EB45A0004E70B /* BitBucketEnterprisePullRequest.swift */,
+				567413411C8EB45A0004E70B /* BitBucketEnterprisePullRequestBranch.swift */,
+				567413421C8EB45A0004E70B /* BitBucketEnterpriseRepo.swift */,
+				567413431C8EB45A0004E70B /* BitBucketEnterpriseStatus.swift */,
+			);
+			name = Entities;
 			sourceTree = "<group>";
 		};
 		EC921E1EDA3F075BEF11727F /* Frameworks */ = {
@@ -1582,34 +1637,47 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A7AF6141C592055000FD726 /* BitBucketEndpoints.swift in Sources */,
+				5674133A1C8EB4430004E70B /* BitBucketEnterpriseEndpoints.swift in Sources */,
 				3AB3F0E21A3CEBAC005F717F /* GitHubEntity.swift in Sources */,
+				56028E571CC5FAD0009303B5 /* BitBucketService.swift in Sources */,
 				3A32CD181A3D01E300861A34 /* GitHubIssue.swift in Sources */,
+				567413491C8EB45A0004E70B /* BitBucketEnterpriseRepo.swift in Sources */,
 				3AB3F0E11A3CEBAC005F717F /* GitHubCommit.swift in Sources */,
 				3A7577AD1C593C5C0023F08C /* BitBucketPullRequestBranch.swift in Sources */,
+				56028E551CC5FA79009303B5 /* BitBucketEnterpriseService.swift in Sources */,
+				5674134A1C8EB45A0004E70B /* BitBucketEnterpriseStatus.swift in Sources */,
 				3A7577B71C59691A0023F08C /* BitBucketStatus.swift in Sources */,
+				567413481C8EB45A0004E70B /* BitBucketEnterprisePullRequestBranch.swift in Sources */,
 				3A7AF6161C5923A4000FD726 /* GitServerFactory.swift in Sources */,
 				3A0BE6E31C5A754E00AC9C57 /* Extensions.swift in Sources */,
 				3AB3F0E31A3CEBAC005F717F /* GitHubPullRequest.swift in Sources */,
 				3AB3F0E71A3CEBAC005F717F /* GitHubStatus.swift in Sources */,
 				3AB3F0E51A3CEBAC005F717F /* GitHubRepo.swift in Sources */,
+				567413441C8EB45A0004E70B /* BitBucketEnterpriseComment.swift in Sources */,
 				3A7AF6181C592919000FD726 /* BitBucketEntity.swift in Sources */,
 				3A7AF61E1C592A90000FD726 /* BitBucketRepo.swift in Sources */,
 				3AB3F0E01A3CEBAC005F717F /* GitHubBranch.swift in Sources */,
+				5674133C1C8EB4430004E70B /* BitBucketEnterpriseServer.swift in Sources */,
+				5674133B1C8EB4430004E70B /* BitBucketEnterpriseRateLimit.swift in Sources */,
 				3AB3F0EB1A3CEBE9005F717F /* GitServerPublic.swift in Sources */,
+				567413451C8EB45A0004E70B /* BitBucketEnterpriseEntity.swift in Sources */,
 				3AB3F0E81A3CEBAC005F717F /* GitHubEndpoints.swift in Sources */,
 				3A7AF61C1C592A17000FD726 /* BitBucketIssue.swift in Sources */,
 				3A32CD141A3D00F800861A34 /* GitHubComment.swift in Sources */,
 				3A35CD6E1BE96E9B0088D57A /* BaseTypes.swift in Sources */,
 				3A7577B31C5963BF0023F08C /* BitBucketComment.swift in Sources */,
 				3AB3F0EA1A3CEBAC005F717F /* GitHubServer.swift in Sources */,
+				567413461C8EB45A0004E70B /* BitBucketEnterpriseIssue.swift in Sources */,
 				3AB3F0E41A3CEBAC005F717F /* GitHubPullRequestBranch.swift in Sources */,
 				3AB3F0E61A3CEBAC005F717F /* GitHubUser.swift in Sources */,
+				56028E591CC5FAFC009303B5 /* GitHubService.swift in Sources */,
 				3A7AF6121C592023000FD726 /* BitBucketServer.swift in Sources */,
 				3A35CD6F1BE96E9B0088D57A /* SourceServerExtensions.swift in Sources */,
 				3A7AF6201C592B2C000FD726 /* BitBucketRateLimit.swift in Sources */,
 				3A3BDC1F1AF6D34900D2CD99 /* GitHubRateLimit.swift in Sources */,
 				3A7AF61A1C592975000FD726 /* BitBucketPullRequest.swift in Sources */,
 				3A014BA51C57A94B00B82B4A /* Authentication.swift in Sources */,
+				567413471C8EB45A0004E70B /* BitBucketEnterprisePullRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

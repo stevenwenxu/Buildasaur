@@ -58,7 +58,7 @@ public class Project {
     public class func attemptToParseFromUrl(url: NSURL) throws -> WorkspaceMetadata {
         return try Project.loadWorkspaceMetadata(url)
     }
-
+    
     private func refreshMetadata() throws {
         let meta = try Project.attemptToParseFromUrl(self.url)
         self.workspaceMetadata = meta
@@ -92,15 +92,24 @@ public class Project {
         and scan up until ".git"
         */
         
-        let serviceUrl = service.hostname().lowercaseString
-        let dotGitRange = stringUrl.rangeOfString(".git", options: NSStringCompareOptions.BackwardsSearch, range: nil, locale: nil) ?? stringUrl.endIndex..<stringUrl.endIndex
-        if let githubRange = stringUrl.rangeOfString(serviceUrl, options: NSStringCompareOptions(), range: nil, locale: nil){
-                
+        switch service.serviceType() {
+        case .GitHub, .BitBucket:
+            let serviceUrl = service.hostname().lowercaseString
+            let dotGitRange = stringUrl.rangeOfString(".git", options: NSStringCompareOptions.BackwardsSearch, range: nil, locale: nil) ?? stringUrl.endIndex..<stringUrl.endIndex
+            if let githubRange = stringUrl.rangeOfString(serviceUrl, options: NSStringCompareOptions(), range: nil, locale: nil)
+            {
                 let start = githubRange.endIndex.advancedBy(1)
                 let end = dotGitRange.startIndex
-            
+                
                 let repoName = originalStringUrl[start ..< end]
                 return repoName
+            }
+        case .BitBucketEnterprise:
+            let pathComponents = service.baseURL().pathComponents!
+            
+            // ssh://<host>/<project name>/<repository name>.git
+            let serviceRepoName = "\(pathComponents[1])/\(pathComponents[2].componentsSeparatedByString(".")[0])"
+            return serviceRepoName
         }
         return nil
     }

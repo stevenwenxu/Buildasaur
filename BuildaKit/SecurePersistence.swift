@@ -43,6 +43,14 @@ final class SecurePersistence {
         return self.keychain("\(Prefix).source_server.passphrase")
     }
     
+    static func sourceServerUserNameKeychain() -> SecurePersistence {
+        return self.keychain("\(Prefix).source_server.username")
+    }
+    
+    static func sourceServerPasswordKeychain() -> SecurePersistence {
+        return self.keychain("\(Prefix).source_server.password")
+    }
+    
     static private func keychain(service: String) -> SecurePersistence {
         #if TESTING
         let keychain = NSMutableDictionary()
