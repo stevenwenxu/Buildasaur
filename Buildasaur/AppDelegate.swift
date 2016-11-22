@@ -17,8 +17,6 @@ Also, you can find the logs at ~/Library/Application Support/Buildasaur/Logs
 import BuildaUtils
 import XcodeServerSDK
 import BuildaKit
-import Fabric
-import Crashlytics
 import Sparkle
 
 @NSApplicationMain
@@ -51,8 +49,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         //        let defs = NSUserDefaults.standardUserDefaults()
         //        defs.setBool(true, forKey: "NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints")
         //        defs.synchronize()
-        
-        self.setupSparkle()
+
         self.setupURLCallback()
         self.setupPersistence()
         
@@ -67,14 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.presentViewControllerInUniqueWindow(dashboard)
         self.dashboardWindow = self.windowForPresentableViewControllerWithIdentifier("dashboard")!.0
     }
-    
-    func setupSparkle() {
-        #if RELEASE
-            self.updater = SUUpdater.sharedUpdater()
-            self.updater!.delegate = self
-        #endif
-    }
-    
+
     func migratePersistence(persistence: Persistence) {
         
         let fileManager = NSFileManager.defaultManager()
@@ -115,20 +105,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let loginItem = LoginItem()
         let syncerManager = SyncerManager(storageManager: storageManager, factory: factory, loginItem: loginItem)
         self.syncerManager = syncerManager
-        
-        if let crashlyticsOptOut = storageManager.config.value["crash_reporting_opt_out"] as? Bool where crashlyticsOptOut {
-            Log.info("User opted out of crash reporting")
-        } else {
-            #if DEBUG
-                Log.info("Not starting Crashlytics in debug mode.")
-            #else
-                Log.info("Will send crashlogs to Crashlytics. To opt out add `\"crash_reporting_opt_out\" = true` to ~/Library/Application Support/Buildasaur/Config.json")
-                NSUserDefaults.standardUserDefaults().registerDefaults([
-                    "NSApplicationCrashOnExceptions": true
-                    ])
-                Fabric.with([Crashlytics.self])
-            #endif
-        }
     }
 
     func createInitialViewController() -> DashboardViewController {
@@ -198,13 +174,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     //Sparkle magic
     func checkForUpdates(sender: AnyObject!) {
         self.updater?.checkForUpdates(sender)
-    }
-}
-
-extension AppDelegate: SUUpdaterDelegate {
-    
-    func updater(updater: SUUpdater!, willInstallUpdate item: SUAppcastItem!) {
-        self.syncerManager.heartbeatManager?.willInstallSparkleUpdate()
     }
 }
 

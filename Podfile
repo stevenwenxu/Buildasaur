@@ -49,7 +49,6 @@ end
 
 target 'Buildasaur' do
     buildasaur_app_pods
-    pod 'Crashlytics'
     pod 'OAuthSwift'
 end
 
