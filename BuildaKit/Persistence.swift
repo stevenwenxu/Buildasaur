@@ -88,12 +88,12 @@ public class Persistence {
         }
     }
     
-    func saveDictionary(name: String, item: NSDictionary) {
+    public func saveDictionary(name: String, item: NSDictionary) {
         self.saveData(name, item: item)
     }
     
     //crashes when I use [JSONWritable] instead of NSArray :(
-    func saveArray(name: String, items: NSArray) {
+    public func saveArray(name: String, items: NSArray) {
         self.saveData(name, item: items)
     }
     

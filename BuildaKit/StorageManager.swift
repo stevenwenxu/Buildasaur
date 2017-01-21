@@ -33,7 +33,7 @@ public class StorageManager {
     let passwordKeychain = SecurePersistence.sourceServerPasswordKeychain()
     let serverConfigKeychain = SecurePersistence.xcodeServerPasswordKeychain()
     
-    private let persistence: Persistence
+    public let persistence: Persistence
     
     public init(persistence: Persistence) {
         

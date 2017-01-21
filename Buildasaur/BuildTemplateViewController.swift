@@ -439,10 +439,22 @@ class BuildTemplateViewController: ConfigEditViewController, NSTableViewDataSour
                 failed: { UIUtils.showAlertWithError($0) },
                 completed: completion,
                 next: { [weak self] (devices) -> () in
+                    self?.logDeviceDetails(devices)
+
                     let processed = BuildTemplateViewController
                         .processReceivedDevices(devices, platform: platform)
                     self?.testingDevices.value = processed
                 }))
+    }
+
+    private func logDeviceDetails(devices: [Device]) {
+        let details = devices.map { (device) -> [String: AnyObject] in
+            return [
+                "id": device.id,
+                "json": device.originalJSON ?? [],
+            ]
+        }
+        self.storageManager.persistence.saveArray("devices.log", items: details)
     }
     
     private static func processReceivedDevices(devices: [Device], platform: DevicePlatform.PlatformType) -> [Device] {
