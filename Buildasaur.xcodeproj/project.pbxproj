@@ -1826,7 +1826,7 @@
 			baseConfigurationReference = A588086CCA23190FC2B378E5 /* Pods-Buildasaur.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Developer ID Application: Jan Dvorsky (7BJ2984YDK)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Aliaksandr Chapliuk (G28MZG8RY9)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = YES;
