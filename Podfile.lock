@@ -54,7 +54,7 @@ EXTERNAL SOURCES:
     :commit: 1730543fcd8b7d7258a3270bb6d3118921d46f9d
     :git: https://github.com/Quick/Nimble.git
   SwiftSafe:
-    :path: ./SwiftSafe/
+    :path: "./SwiftSafe/"
 
 CHECKOUT OPTIONS:
   Nimble:
