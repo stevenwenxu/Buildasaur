@@ -88,10 +88,10 @@ extension WorkspaceMetadata {
             }
         }
 
-        switch url.scheme {
+        switch url.scheme! {
         case "":
             // No scheme, likely to be SSH so let's check for the telltale 'git@' in the resource specifier.
-            if url.resourceSpecifier.containsString("git@") {
+            if url.resourceSpecifier!.containsString("git@") {
                 checkoutType = .SSH
             }
         case "ssh":

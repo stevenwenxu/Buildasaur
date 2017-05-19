@@ -17,7 +17,9 @@ public class XcodeServerSyncerUtils {
         
         //pull info from template
         let schemeName = template.scheme
-        
+        Log.verbose("-------------- schemeName: \(schemeName)")
+
+
         //optionally override the schedule, if nil, takes it from the template
         let schedule = scheduleOverride ?? template.schedule
         let cleaningPolicy = template.cleaningPolicy

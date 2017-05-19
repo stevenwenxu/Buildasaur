@@ -25,7 +25,7 @@ class BitBucketEnterpriseRepo: BitBucketEnterpriseEntity, RepoType {
         let ssh:[String:String] = clone[0] as! [String : String]
         let sshURL = NSURL(string: ssh["href"]!)!
         
-        self.originUrlSSH = sshURL.absoluteString //sshURL.host! + sshURL.path!
+        self.originUrlSSH = sshURL.absoluteString! //sshURL.host! + sshURL.path!
         
         super.init(json: json)
     }

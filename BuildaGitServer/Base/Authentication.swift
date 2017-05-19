@@ -70,7 +70,7 @@ extension ProjectAuthenticator: KeychainStringSerializable {
         case .GitHub, .BitBucket:
             hostname = self.service.hostname()
         case .BitBucketEnterprise:
-            hostname = self.service.baseURL().absoluteString
+            hostname = self.service.baseURL().absoluteString!
         }
         return [
             self.service.serviceType().rawValue,

@@ -43,10 +43,10 @@ public struct GitHubService: GitService {
     }
     
     public func serviceKey() -> String {
-        return BuildasaurKeys().gitHubAPIClientId()
+        return BuildasaurKeys().gitHubAPIClientId
     }
     
     public func serviceSecret() -> String {
-        return BuildasaurKeys().gitHubAPIClientSecret()
+        return BuildasaurKeys().gitHubAPIClientSecret
     }
 }

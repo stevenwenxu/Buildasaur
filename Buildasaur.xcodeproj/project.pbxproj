@@ -1779,6 +1779,7 @@
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
 		};
@@ -1818,6 +1819,7 @@
 				OTHER_SWIFT_FLAGS = "-D RELEASE";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
 		};
@@ -1978,6 +1980,7 @@
 				OTHER_SWIFT_FLAGS = "-D TESTING";
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 			};
 			name = Testing;
 		};

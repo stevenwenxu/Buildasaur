@@ -43,10 +43,10 @@ public struct BitBucketService: GitService {
     }
     
     public func serviceKey() -> String {
-        return BuildasaurKeys().bitBucketAPIClientId()
+        return BuildasaurKeys().bitBucketAPIClientId
     }
     
     public func serviceSecret() -> String {
-        return BuildasaurKeys().bitBucketAPIClientSecret()
+        return BuildasaurKeys().bitBucketAPIClientSecret
     }
 }
