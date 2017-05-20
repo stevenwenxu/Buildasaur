@@ -16,7 +16,7 @@ class BitBucketEnterpriseComment: BitBucketEnterpriseEntity, CommentType {
         
         self.body = try! json
             .optionalDictionaryForKey("content")?
-            .stringForKey("raw") ?? json.stringForKey("content")
+            .stringForKey("raw") ?? json.stringForKey("text")
         
         super.init(json: json)
     }

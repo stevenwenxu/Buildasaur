@@ -57,7 +57,7 @@ class BitBucketEnterpriseEndpoints {
             if params?["method"] == "POST" {
                 let repo = params!["repo"]!
                 let pr = params!["pr"]!
-                return "/1.0/repositories/\(self.repoEndPointName(repo))/pull-requests/\(pr)/comments"
+                return "/rest/api/1.0/projects/\(self.repoEndPointName(repo))/pull-requests/\(pr)/comments"
             } else {
                 return "\(pr)/comments"
             }

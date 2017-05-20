@@ -181,12 +181,13 @@ extension BitBucketEnterpriseServer: SourceServerType {
         ]
         
         let body = [
-            "content": comment
+            "text": comment
         ]
         
         self._sendRequestWithMethod(.POST, endpoint: .PullRequestComments, params: params, query: nil, body: body) { (response, body, error) -> () in
             
             if error != nil {
+                Log.verbose("Failed to post comment with error: \(error?.localizedDescription)")
                 completion(comment: nil, error: error)
                 return
             }

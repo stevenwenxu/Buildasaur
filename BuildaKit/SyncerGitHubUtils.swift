@@ -49,37 +49,29 @@ extension StandardSyncer {
     }
 
     func postStatusWithComment(statusWithComment: StatusAndComment, commit: String, repo: String, issue: IssueType?, completion: SyncPair.Completion) {
+        //have a chance to NOT post a status comment...
+        let postStatusComments = self._postStatusComments
         
-        self._sourceServer.postStatusOfCommit(commit, status: statusWithComment.status, repo: repo) { (status, error) -> () in
+        //optional there can be a comment to be posted and there's an issue to be posted on
+        if
+            let issue = issue,
+            let comment = statusWithComment.comment where postStatusComments {
             
-            if error != nil {
-                let e = Error.withInfo("Failed to post a status on commit \(commit) of repo \(repo)", internalError: error as? NSError)
-                completion(error: e)
-                return
-            }
-            
-            //have a chance to NOT post a status comment...
-            let postStatusComments = self._postStatusComments
-            
-            //optional there can be a comment to be posted and there's an issue to be posted on
-            if
-                let issue = issue,
-                let comment = statusWithComment.comment where postStatusComments {
+            //we have a comment, post it
+            self._sourceServer.postCommentOnIssue(comment, issueNumber: issue.number, repo: repo, completion: { (comment, error) -> () in
                 
-                //we have a comment, post it
-                self._sourceServer.postCommentOnIssue(comment, issueNumber: issue.number, repo: repo, completion: { (comment, error) -> () in
-                    
-                    if error != nil {
-                        let e = Error.withInfo("Failed to post a comment \"\(comment)\" on Issue \(issue.number) of repo \(repo)", internalError: error as? NSError)
-                        completion(error: e)
-                    } else {
-                        completion(error: nil)
-                    }
-                })
-                
-            } else {
-                completion(error: nil)
-            }
+                if error != nil {
+                    Log.verbose("---------------- failed to post comment: \(comment), status: \(statusWithComment.status) with error: \(error)")
+
+                    let e = Error.withInfo("Failed to post a comment \"\(comment)\" on Issue \(issue.number) of repo \(repo)", internalError: error as? NSError)
+                    completion(error: e)
+                } else {
+                    completion(error: nil)
+                }
+            })
+            
+        } else {
+            completion(error: nil)
         }
     }
 }
