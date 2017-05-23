@@ -8,6 +8,7 @@
 
 import Cocoa
 import BuildaKit
+import BuildaUtils
 import ReactiveCocoa
 import Result
 
@@ -26,7 +27,7 @@ class DashboardViewController: PresentableViewController {
     //injected before viewDidLoad
     var syncerManager: SyncerManager!
     var serviceAuthenticator: ServiceAuthenticator!
-    
+
     private var syncerViewModels: MutableProperty<[SyncerViewModel]> = MutableProperty([])
     
     override func viewDidLoad() {
@@ -36,6 +37,7 @@ class DashboardViewController: PresentableViewController {
         self.configDataSource()
         self.configTableView()
         self.configHeaderView()
+        configWebSocket()
     }
     
     override func viewDidAppear() {
@@ -111,6 +113,9 @@ class DashboardViewController: PresentableViewController {
                 .sort { $0.0.initialProjectName < $0.1.initialProjectName }
             self.syncersTableView.reloadData()
         }
+    }
+
+    func configWebSocket() {
     }
     
     //MARK: Responding to button inside of cells

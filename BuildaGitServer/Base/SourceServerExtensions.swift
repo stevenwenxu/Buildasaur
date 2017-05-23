@@ -49,7 +49,7 @@ extension SourceServerType {
                     
                     let filteredSearch = commentsToMatch.filter {
                         (searchString: String) -> Bool in
-                        if searchString == comment.body {
+                        if searchString.caseInsensitiveCompare(comment.body) == .OrderedSame {
                             return true
                         }
                         return false

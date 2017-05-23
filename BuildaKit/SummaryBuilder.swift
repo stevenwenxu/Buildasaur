@@ -45,6 +45,7 @@ class SummaryBuilder {
             default:
                 self.appendWarningsAndAnalyzerWarnings(buildResultSummary)
             }
+            appendRebuildLink()
             
         default: break
         }
@@ -64,6 +65,7 @@ class SummaryBuilder {
         let status = self.createStatus(.Failure, description: "Build failed tests!", targetUrl: linkToIntegration)
         let buildResultSummary = integration.buildResultSummary!
         self.appendTestFailure(buildResultSummary)
+        appendRebuildLink()
         return self.buildWithStatus(status)
     }
     
@@ -75,6 +77,7 @@ class SummaryBuilder {
         let status = self.createStatus(.Error, description: "Build error!", targetUrl: linkToIntegration)
         
         self.appendErrors(integration)
+        appendRebuildLink()
         return self.buildWithStatus(status)
     }
     
@@ -87,6 +90,7 @@ class SummaryBuilder {
         let status = self.createStatus(.Error, description: "Build canceled!", targetUrl: linkToIntegration)
         
         self.appendCancel()
+        appendRebuildLink()
         return self.buildWithStatus(status)
     }
     
@@ -174,6 +178,10 @@ class SummaryBuilder {
         
         //TODO: find out who canceled it and add it to the comment?
         self.lines.append("Build was **manually canceled**.")
+    }
+
+    func appendRebuildLink() {
+        self.lines.append("Make a new commit or [click here](https://www.google.com) to test again")
     }
     
     func buildWithStatus(status: StatusType) -> StatusAndComment {

@@ -51,6 +51,7 @@ target 'Buildasaur' do
     buildasaur_app_pods
     pod 'Crashlytics'
     pod 'OAuthSwift'
+    pod 'Socket.IO-Client-Swift', :git => "https://github.com/socketio/socket.io-client-swift.git", :tag => "v7.0.3"
 end
 
 target 'BuildaKit' do
