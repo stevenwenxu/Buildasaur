@@ -124,7 +124,7 @@ class SummaryBuilder {
         
         let testsCount = buildResultSummary.testsCount
         let testSection = testsCount > 0 ? "All \(testsCount) " + "test".pluralizeStringIfNecessary(testsCount) + " passed. " : ""
-        self.lines.append(self.resultString + "**Perfect build!** \(testSection):+1:")
+        self.lines.append(self.resultString + "**Perfect build!** \(testSection)👍")
     }
     
     func appendWarnings(buildResultSummary: BuildResultSummary) {

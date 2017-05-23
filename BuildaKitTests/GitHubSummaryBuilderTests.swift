@@ -37,7 +37,7 @@ class GitHubSummaryBuilderTests: XCTestCase {
         summary.statusCreator = MockGitHubServer()
         let result = summary.buildPassing(integration)
         
-        let exp_comment = "Result of Integration 15\n---\n*Duration*: 28 seconds\n*Result*: **Perfect build!** :+1:"
+        let exp_comment = "Result of Integration 15\n---\n*Duration*: 28 seconds\n*Result*: **Perfect build!** 👍"
         let exp_status = "Build passed!"
         let exp_state = BuildState.Success
         expect(result.comment) == exp_comment
@@ -55,7 +55,7 @@ class GitHubSummaryBuilderTests: XCTestCase {
         summary.linkBuilder = self.linkBuilder()
         let result = summary.buildPassing(integration)
         
-        let exp_comment = "Result of [Integration 15](https://link/to/d3884f0ab7df9c699bc81405f4045ec6)\n---\n*Duration*: 28 seconds\n*Result*: **Perfect build!** :+1:"
+        let exp_comment = "Result of [Integration 15](https://link/to/d3884f0ab7df9c699bc81405f4045ec6)\n---\n*Duration*: 28 seconds\n*Result*: **Perfect build!** 👍"
         let exp_status = "Build passed!"
         let exp_state = BuildState.Success
         let exp_link = "https://link/to/d3884f0ab7df9c699bc81405f4045ec6"
@@ -73,7 +73,7 @@ class GitHubSummaryBuilderTests: XCTestCase {
         summary.statusCreator = MockGitHubServer()
         let result = summary.buildPassing(integration)
         
-        let exp_comment = "Result of Integration 15\n---\n*Duration*: 28 seconds\n*Result*: **Perfect build!** :+1:\n*Test Coverage*: 12%"
+        let exp_comment = "Result of Integration 15\n---\n*Duration*: 28 seconds\n*Result*: **Perfect build!** 👍\n*Test Coverage*: 12%"
         let exp_status = "Build passed!"
         let exp_state = BuildState.Success
         expect(result.comment) == exp_comment

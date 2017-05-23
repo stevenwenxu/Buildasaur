@@ -133,6 +133,7 @@ extension BitBucketEnterpriseServer: SourceServerType {
             }
             
             if let body = body as? NSArray {
+                Log.verbose("--------------- getStatusOfCommit: \(body)")
                 if body.count > 0 {
                     if let body = body[0] as? NSDictionary {
                         let status = BitBucketEnterpriseStatus(json: body)
@@ -158,17 +159,14 @@ extension BitBucketEnterpriseServer: SourceServerType {
         
         let body = (status as! BitBucketEnterpriseStatus).dictionarify()
         self._sendRequestWithMethod(.POST, endpoint: .CommitStatuses, params: params, query: nil, body: body) { (response, body, error) -> () in
-            
-            if error != nil {
-                completion(status: nil, error: error)
-                return
-            }
-            
-            if let body = body as? NSDictionary {
-                let status = BitBucketEnterpriseStatus(json: body)
-                completion(status: status, error: nil)
+
+            let isSuccessful = response != nil && 200...299 ~= response!.statusCode
+
+            // status is always nil because the server doesn't return it at all
+            if isSuccessful {
+                completion(status: nil, error: nil)
             } else {
-                completion(status: nil, error: Error.withInfo("Wrong body \(body)"))
+                completion(status: nil, error: Error.withInfo("Status code is not 2xx, failed to store status of commit"))
             }
         }
     }
@@ -228,6 +226,12 @@ extension BitBucketEnterpriseServer: SourceServerType {
 extension BitBucketEnterpriseServer {
     
     private func _sendRequest(request: NSMutableURLRequest, isRetry: Bool = false, completion: HTTP.Completion) {
+
+        let cachedInfo = self.cache.getCachedInfoForRequest(request)
+        if let etag = cachedInfo.etag {
+            request.setValue(etag, forHTTPHeaderField: "If-None-Match")
+        }
+
         
         self.http.sendRequest(request) { (response, body, error) -> () in
             
@@ -235,12 +239,18 @@ extension BitBucketEnterpriseServer {
                 completion(response: response, body: body, error: error)
                 return
             }
-            
+
             //error out on special HTTP status codes
             let statusCode = response!.statusCode
             switch statusCode {
-            case 400, 401, 402 ... 500:
-                
+            case 200...299: //good response, cache the returned data
+                let responseInfo = ResponseInfo(response: response!, body: body)
+                cachedInfo.update(responseInfo)
+            case 304: //not modified, return the cached response
+                let responseInfo = cachedInfo.responseInfo!
+                completion(response: responseInfo.response, body: responseInfo.body, error: nil)
+                return
+            case 400 ... 500:
                 let message = (((body as? NSDictionary)?["errors"] as? NSArray)?[0] as? NSDictionary)?["message"] as? String ?? (body as? String ?? "Unknown error")
                 let resultString = "\(statusCode): \(message)"
                 completion(response: response, body: body, error: Error.withInfo(resultString, internalError: error))
@@ -248,7 +258,7 @@ extension BitBucketEnterpriseServer {
             default:
                 break
             }
-            
+
             completion(response: response, body: body, error: error)
         }
     }

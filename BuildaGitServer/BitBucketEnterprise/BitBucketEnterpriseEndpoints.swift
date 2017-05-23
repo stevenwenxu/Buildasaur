@@ -112,7 +112,7 @@ class BitBucketEnterpriseEndpoints {
     }
 
     func setJSONBody(request: NSMutableURLRequest, body: NSDictionary) throws {
-        let data = try NSJSONSerialization.dataWithJSONObject(body, options: NSJSONWritingOptions())
+        let data = try NSJSONSerialization.dataWithJSONObject(body, options: [])
         request.HTTPBody = data
         request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
     }
