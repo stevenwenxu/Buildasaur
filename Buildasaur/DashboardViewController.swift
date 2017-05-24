@@ -11,6 +11,7 @@ import BuildaKit
 import BuildaUtils
 import ReactiveCocoa
 import Result
+import SocketIO
 
 protocol EditeeDelegate: class, EmptyXcodeServerViewControllerDelegate, XcodeServerViewControllerDelegate, EmptyProjectViewControllerDelegate, ProjectViewControllerDelegate, EmptyBuildTemplateViewControllerDelegate, BuildTemplateViewControllerDelegate, SyncerViewControllerDelegate { }
 
@@ -27,6 +28,8 @@ class DashboardViewController: PresentableViewController {
     //injected before viewDidLoad
     var syncerManager: SyncerManager!
     var serviceAuthenticator: ServiceAuthenticator!
+
+    var socket: SocketIOClient!
 
     private var syncerViewModels: MutableProperty<[SyncerViewModel]> = MutableProperty([])
     
@@ -116,8 +119,23 @@ class DashboardViewController: PresentableViewController {
     }
 
     func configWebSocket() {
+        socket = SocketIOClient(socketURL: NSURL(string: "http://wxu-laptop.local:5000")!)
+        socket.on("connect") { data, ack in
+            Log.info("Socket IO connected")
+        }
+        socket.on("rebuild") { data, ack in
+            Log.info("rebuild request: \(data)")
+            guard let data = data.first as? [String:AnyObject] else { return }
+            let syncer = self.syncerManager.syncers.filter { $0.repoName()! == data["repoName"]! as! String }
+            if let syncer = syncer.first {
+                syncer.itemsToRetest.append(RetestItem(repo: syncer.repoName()!, pr: data["prNumber"] as! Int))
+            }
+
+        }
+        socket.connect()
+
     }
-    
+
     //MARK: Responding to button inside of cells
     
     private func syncerViewModelFromSender(sender: BuildaNSButton) -> SyncerViewModel {

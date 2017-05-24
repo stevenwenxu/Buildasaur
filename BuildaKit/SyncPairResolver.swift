@@ -23,6 +23,7 @@ public class SyncPairResolver {
         bot: Bot,
         hostname: String,
         buildStatusCreator: BuildStatusCreator,
+        retest: Bool,
         integrations: [Integration]) -> SyncPair.Actions {
             
             var integrationsToCancel: [Integration] = []
@@ -80,6 +81,13 @@ public class SyncPairResolver {
                     statusToSet: nil,
                     startNewIntegrationBot: bot
                 )
+            }
+
+            // if retest, start new integration
+            if retest {
+                return SyncPair.Actions(integrationsToCancel: integrationsToCancel,
+                                        statusToSet: nil,
+                                        startNewIntegrationBot: bot)
             }
             
             //A2. not empty, keep resolving

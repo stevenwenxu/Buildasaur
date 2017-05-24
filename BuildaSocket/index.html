@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <title>Buildasaur integration</title>
+</head>
+<body>
+    <h1 class="title">Rerunning the tests...</h1>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+    <script>
+        var socket = io.connect('http://wxu-laptop.local:5000');
+        socket.emit('rebuild-request', {
+            'repoName': "~wxu/test",
+            'prNumber': 3
+        });
+        setTimeout(function() {
+            window.history.back();
+        }, 3000);
+    </script>
+</body>
+</html>

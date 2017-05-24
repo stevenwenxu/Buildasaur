@@ -36,6 +36,8 @@ public class StandardSyncer : Syncer {
         self.triggers = triggers
         
         super.init(syncInterval: config.syncInterval)
+
+        self.itemsToRetest = []
         
         self.config.producer.startWithNext { [weak self] in
             self?.syncInterval = $0.syncInterval

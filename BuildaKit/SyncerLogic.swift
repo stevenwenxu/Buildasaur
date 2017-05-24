@@ -33,6 +33,7 @@ extension StandardSyncer {
     
     public typealias BotActions = (
         prsToSync: [(pr: PullRequestType, bot: Bot)],
+        prsToRetest: [(pr: PullRequestType, bot: Bot)],
         prBotsToCreate: [PullRequestType],
         branchesToSync: [(branch: BranchType, bot: Bot)],
         branchBotsToCreate: [BranchType],
@@ -52,7 +53,7 @@ extension StandardSyncer {
                 completion()
                 return
             }
-            
+
             if let repo = repo {
                 
                 self.syncRepoWithNameAndMetadata(repoName, repo: repo, completion: completion)
@@ -191,6 +192,9 @@ extension StandardSyncer {
             
             //PRs that also have a bot, prsToSync
             var prsToSync: [(pr: PullRequestType, bot: Bot)] = []
+
+            // PRs that needs to be re-tested
+            var prsToRetest: [(pr: PullRequestType, bot: Bot)] = []
             
             //branches that also have a bot, branchesToSync
             var branchesToSync: [(branch: BranchType, bot: Bot)] = []
@@ -200,6 +204,21 @@ extension StandardSyncer {
             
             //branches that don't have a bot yet, to create
             var branchBotsToCreate: [BranchType] = []
+
+            for item in itemsToRetest {
+                if repoName == item.repoName {
+                    let pr = prs.filter { $0.number == item.prNumber }.first
+                    if let pr = pr {
+                        let botName = BotNaming.nameForBotWithPR(pr, repoName: repoName)
+                        if let bot = mappedBots[botName] {
+                            prsToRetest.append((pr: pr, bot: bot))
+
+                            // we handled it
+                            mappedBots.removeValueForKey(botName)
+                        }
+                    }
+                }
+            }
             
             //make sure every PR has a bot
             for pr in prs {
@@ -213,8 +232,16 @@ extension StandardSyncer {
                     //and remove from bots mappedBots, because we handled it
                     mappedBots.removeValueForKey(botName)
                 } else {
-                    //no bot found for this PR, we'll have to create one
-                    prBotsToCreate.append(pr)
+                    var shouldCreateBot = true
+                    for item in itemsToRetest {
+                        if repoName == item.repoName && pr.number == item.prNumber {
+                            shouldCreateBot = false
+                        }
+                    }
+                    if shouldCreateBot {
+                        //no bot found for this PR, we'll have to create one
+                        prBotsToCreate.append(pr)
+                    }
                 }
             }
             
@@ -255,7 +282,7 @@ extension StandardSyncer {
             //bots that don't have a PR or a branch, to delete
             let botsToDelete = Array(mappedBots.values)
             
-            return (prsToSync, prBotsToCreate, branchesToSync, branchBotsToCreate, botsToDelete)
+            return (prsToSync, prsToRetest, prBotsToCreate, branchesToSync, branchBotsToCreate, botsToDelete)
     }
     
     public func createSyncPairsFrom(repo repo: RepoType, botActions: BotActions) -> [SyncPair] {
@@ -264,6 +291,9 @@ extension StandardSyncer {
         let syncPRBotSyncPairs = botActions.prsToSync.map({
             SyncPair_PR_Bot(pr: $0.pr, bot: $0.bot, resolver: SyncPairPRResolver()) as SyncPair
         })
+        let syncRetestSyncPairs = botActions.prsToRetest.map {
+            SyncPair_PR_Bot(pr: $0.pr, bot: $0.bot, resolver: SyncPairPRResolver(), retest: true)
+        }
         let createBotFromPRSyncPairs = botActions.prBotsToCreate.map({ SyncPair_PR_NoBot(pr: $0) as SyncPair })
         let syncBranchBotSyncPairs = botActions.branchesToSync.map({
             SyncPair_Branch_Bot(branch: $0.branch, bot: $0.bot, resolver: SyncPairBranchResolver()) as SyncPair
@@ -275,14 +305,13 @@ extension StandardSyncer {
         
         //put them all into one array
         let toCreate: [SyncPair] = createBotFromPRSyncPairs + createBotFromBranchSyncPairs
-        let toSync: [SyncPair] = syncPRBotSyncPairs + syncBranchBotSyncPairs
+        let toSync: [SyncPair] = syncPRBotSyncPairs + syncBranchBotSyncPairs + syncRetestSyncPairs
         let toDelete: [SyncPair] = deleteBotSyncPairs
         
         let syncPairsRaw: [SyncPair] = toCreate + toSync + toDelete
         
         //prepared sync pair
-        let syncPairs = syncPairsRaw.map({
-            (syncPair: SyncPair) -> SyncPair in
+        let syncPairs = syncPairsRaw.map({ (syncPair: SyncPair) -> SyncPair in
             syncPair.syncer = self
             return syncPair
         })
@@ -314,6 +343,9 @@ extension StandardSyncer {
             })
         }
         
-        dispatch_group_notify(group, dispatch_get_main_queue(), completion)
+        dispatch_group_notify(group, dispatch_get_main_queue(), {
+            self.itemsToRetest.removeAll()
+            completion()
+        })
     }
 }

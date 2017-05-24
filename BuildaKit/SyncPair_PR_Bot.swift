@@ -16,14 +16,16 @@ public class SyncPair_PR_Bot: SyncPair {
     let pr: PullRequestType
     let bot: Bot
     public let resolver: SyncPairPRResolver
+    var retest: Bool
     
-    public init(pr: PullRequestType, bot: Bot, resolver: SyncPairPRResolver) {
+    public init(pr: PullRequestType, bot: Bot, resolver: SyncPairPRResolver, retest: Bool? = false) {
         self.pr = pr
         self.bot = bot
         self.resolver = resolver
+        self.retest = retest ?? false
         super.init()
     }
-    
+
     override func sync(completion: Completion) {
         
         //sync the PR with the Bot
@@ -74,6 +76,7 @@ public class SyncPair_PR_Bot: SyncPair {
                             bot: bot,
                             hostname: hostname!,
                             buildStatusCreator: self.syncer,
+                            retest: self.retest,
                             integrations: integrations)
                         self.performActions(actions, completion: completion)
                     }

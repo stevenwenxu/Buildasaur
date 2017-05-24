@@ -45,7 +45,6 @@ class SummaryBuilder {
             default:
                 self.appendWarningsAndAnalyzerWarnings(buildResultSummary)
             }
-            appendRebuildLink()
             
         default: break
         }

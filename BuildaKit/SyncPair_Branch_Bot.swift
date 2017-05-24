@@ -62,6 +62,7 @@ public class SyncPair_Branch_Bot: SyncPair {
                     bot: bot,
                     hostname: hostname!,
                     buildStatusCreator: self.syncer,
+                    retest: false,
                     integrations: integrations)
                 
                 //in case of branches, we also (optionally) want to add functionality for creating an issue if the branch starts failing and updating with comments the same way we do with PRs.
