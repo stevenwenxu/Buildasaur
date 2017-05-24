@@ -34,7 +34,7 @@ extension StandardSyncer {
                 completion(error: e)
                 return
             }
-            
+
             if status == nil || !newStatus.status.isEqual(status!) {
                 
                 //TODO: add logic for handling the creation of a new Issue for branch tracking

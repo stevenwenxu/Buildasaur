@@ -27,7 +27,7 @@ public class SyncPairResolver {
         integrations: [Integration]) -> SyncPair.Actions {
             
             var integrationsToCancel: [Integration] = []
-            let startNewIntegration: Bool = false
+            var startNewIntegration: Bool = false
             
             //------------
             // Split integrations into two groups: 1) for this SHA, 2) the rest
@@ -83,13 +83,11 @@ public class SyncPairResolver {
                 )
             }
 
-            // if retest, start new integration
+            // start a new integration to retest
             if retest {
-                return SyncPair.Actions(integrationsToCancel: integrationsToCancel,
-                                        statusToSet: nil,
-                                        startNewIntegrationBot: bot)
+                startNewIntegration = true
             }
-            
+
             //A2. not empty, keep resolving
             
             //B. get pending Integrations
@@ -137,7 +135,7 @@ public class SyncPairResolver {
                 link: link,
                 statusCreator: buildStatusCreator,
                 completed: completedIntegrations)
-            
+
             //merge in nested actions
             return SyncPair.Actions(
                 integrationsToCancel: integrationsToCancel + (actions.integrationsToCancel ?? []),

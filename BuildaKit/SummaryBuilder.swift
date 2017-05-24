@@ -29,7 +29,7 @@ class SummaryBuilder {
         let linkToIntegration = self.linkBuilder(integration)
         self.addBaseCommentFromIntegration(integration)
         
-        let status = self.createStatus(.Success, description: "Build passed!", targetUrl: linkToIntegration)
+        let status = self.createStatus(.Success, description: "Build passed for Integration #\(integration.number)!", targetUrl: linkToIntegration)
         
         let buildResultSummary = integration.buildResultSummary!
         switch integration.result {
@@ -61,7 +61,7 @@ class SummaryBuilder {
         
         self.addBaseCommentFromIntegration(integration)
         
-        let status = self.createStatus(.Failure, description: "Build failed tests!", targetUrl: linkToIntegration)
+        let status = self.createStatus(.Failure, description: "Build failed tests for Integration #\(integration.number)!", targetUrl: linkToIntegration)
         let buildResultSummary = integration.buildResultSummary!
         self.appendTestFailure(buildResultSummary)
         appendRebuildLink()
@@ -73,7 +73,7 @@ class SummaryBuilder {
         let linkToIntegration = self.linkBuilder(integration)
         self.addBaseCommentFromIntegration(integration)
         
-        let status = self.createStatus(.Error, description: "Build error!", targetUrl: linkToIntegration)
+        let status = self.createStatus(.Error, description: "Build error for Integration #\(integration.number)!", targetUrl: linkToIntegration)
         
         self.appendErrors(integration)
         appendRebuildLink()
@@ -86,7 +86,7 @@ class SummaryBuilder {
         
         self.addBaseCommentFromIntegration(integration)
         
-        let status = self.createStatus(.Error, description: "Build canceled!", targetUrl: linkToIntegration)
+        let status = self.createStatus(.Error, description: "Build canceled for Integration #\(integration.number)!", targetUrl: linkToIntegration)
         
         self.appendCancel()
         appendRebuildLink()
@@ -180,7 +180,7 @@ class SummaryBuilder {
     }
 
     func appendRebuildLink() {
-        self.lines.append("Make a new commit or [click here](https://www.google.com) to test again")
+        self.lines.append("Make a new commit or [click here](http://wxu-laptop.local:5000) to test again")
     }
     
     func buildWithStatus(status: StatusType) -> StatusAndComment {

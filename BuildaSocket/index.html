@@ -4,17 +4,36 @@
     <title>Buildasaur integration</title>
 </head>
 <body>
-    <h1 class="title">Rerunning the tests...</h1>
+    <h1 id="BuildSocketTitle">Re-running the tests, will go back in 3 seconds...</h1>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
     <script>
         var socket = io.connect('http://wxu-laptop.local:5000');
-        socket.emit('rebuild-request', {
-            'repoName': "~wxu/test",
-            'prNumber': 3
-        });
-        setTimeout(function() {
-            window.history.back();
-        }, 3000);
+        var repoName = "";
+        var prNumber = 0;
+        var isOnPRPage = true;
+
+        var pathnames = window.location.pathname.split('/');
+        if (pathnames[1] == 'projects' && pathnames[3] == 'repos' && pathnames[5] == 'pull-requests') {
+            repoName = pathnames[2] + '/' + pathnames[4];
+            prNumber = parseInt(pathnames[6]);
+        } else if (pathnames[1] == 'users' && pathnames[3] == 'repos' && pathnames[5] == 'pull-requests') {
+            repoName = '~' + pathnames[2] + '/' + pathnames[4];
+            prNumber = parseInt(pathnames[6]);
+        } else {
+            isOnPRPage = false;
+            document.getElementById('BuildSocketTitle').innerHTML = "Something's wrong, how did you get here?"
+        }
+
+        if (isOnPRPage) {
+            socket.emit('rebuild-request', {
+                'repoName': repoName,
+                'prNumber': prNumber
+            });
+            setTimeout(function() {
+                window.history.back();
+            }, 3000);
+        }
+
     </script>
 </body>
 </html>
