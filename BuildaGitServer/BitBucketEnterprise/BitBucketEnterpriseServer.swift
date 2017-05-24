@@ -59,6 +59,9 @@ extension BitBucketEnterpriseServer: SourceServerType {
             
             if let body = body as? [NSDictionary] {
                 let prs: [BitBucketEnterprisePullRequest] = BitBucketEnterpriseArray(body)
+                prs.forEach { (pr) in
+                    pr.repoName = repo
+                }
                 completion(prs: prs.map { $0 as PullRequestType }, error: nil)
             } else {
                 completion(prs: nil, error: Error.withInfo("Wrong body \(body)"))
@@ -82,6 +85,7 @@ extension BitBucketEnterpriseServer: SourceServerType {
             
             if let body = body as? NSDictionary {
                 let pr = BitBucketEnterprisePullRequest(json: body)
+                pr.repoName = repo
                 completion(pr: pr, error: nil)
             } else {
                 completion(pr: nil, error: Error.withInfo("Wrong body \(body)"))

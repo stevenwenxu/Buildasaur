@@ -12,6 +12,8 @@ class GitHubPullRequest : GitHubIssue, PullRequestType {
     
     let head: GitHubPullRequestBranch
     let base: GitHubPullRequestBranch
+
+    var repoName: String = ""
     
     required init(json: NSDictionary) throws {
         

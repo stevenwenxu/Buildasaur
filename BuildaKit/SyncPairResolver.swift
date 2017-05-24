@@ -23,7 +23,7 @@ public class SyncPairResolver {
         bot: Bot,
         hostname: String,
         buildStatusCreator: BuildStatusCreator,
-        retest: Bool,
+        retest: Bool = false,
         integrations: [Integration]) -> SyncPair.Actions {
             
             var integrationsToCancel: [Integration] = []
@@ -253,7 +253,7 @@ public class SyncPairResolver {
                     if completed.count > 0 {
                         
                         //we have some completed integrations
-                        statusWithComment = self.resolveStatusFromCompletedIntegrations(completed, statusCreator: statusCreator, link: link)
+                        statusWithComment = self.resolveStatusFromCompletedIntegrations(completed, statusCreator: statusCreator, link: link, issue: issue)
                         
                     } else {
                         //this shouldn't happen.
@@ -274,7 +274,8 @@ public class SyncPairResolver {
     func resolveStatusFromCompletedIntegrations(
         integrations: Set<Integration>,
         statusCreator: BuildStatusCreator,
-        link: (Integration) -> String?
+        link: (Integration) -> String?,
+        issue: IssueType?
         ) -> StatusAndComment {
             
             //get integrations sorted by number
@@ -282,7 +283,15 @@ public class SyncPairResolver {
             let summary = SummaryBuilder()
             summary.linkBuilder = link
             summary.statusCreator = statusCreator
-            
+
+            summary.retestURLBuilder = {
+                if let issue = issue as? PullRequestType {
+                    return "http://wxu-laptop.local:5000/?repoName=\(issue.repoName)&prNumber=\(issue.number)"
+                } else {
+                    return nil
+                }
+            }
+
             //if there are any succeeded, it wins - iterating from the end
             if let passingIntegration = sortedDesc.filter({
                 (integration: Integration) -> Bool in

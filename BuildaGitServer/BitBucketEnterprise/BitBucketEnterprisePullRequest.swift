@@ -13,6 +13,8 @@ class BitBucketEnterprisePullRequest: BitBucketEnterpriseIssue, PullRequestType 
     let title: String
     let source: BitBucketEnterprisePullRequestBranch
     let destination: BitBucketEnterprisePullRequestBranch
+
+    var repoName: String
     
     required init(json: NSDictionary) {
         
@@ -20,6 +22,8 @@ class BitBucketEnterprisePullRequest: BitBucketEnterpriseIssue, PullRequestType 
         
         self.source = BitBucketEnterprisePullRequestBranch(json: try! json.dictionaryForKey("fromRef"))
         self.destination = BitBucketEnterprisePullRequestBranch(json: try! json.dictionaryForKey("toRef"))
+
+        self.repoName = ""
         
         super.init(json: json)
     }

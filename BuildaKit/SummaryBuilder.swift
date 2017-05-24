@@ -17,6 +17,7 @@ class SummaryBuilder {
     var lines: [String] = []
     let resultString: String
     var linkBuilder: (Integration) -> String? = { _ in nil }
+    var retestURLBuilder: (() -> String?) = { nil }
     
     init() {
         self.resultString = "*Result*: "
@@ -180,7 +181,11 @@ class SummaryBuilder {
     }
 
     func appendRebuildLink() {
-        self.lines.append("Make a new commit or [click here](http://wxu-laptop.local:5000) to test again")
+        if let url = retestURLBuilder() {
+            self.lines.append("Make a new commit or [click here](\(url)) to test again")
+        } else {
+            self.lines.append("Make a new commit to test again")
+        }
     }
     
     func buildWithStatus(status: StatusType) -> StatusAndComment {

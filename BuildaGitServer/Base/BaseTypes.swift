@@ -83,6 +83,8 @@ public protocol PullRequestType: IssueType {
     var baseName: String { get }
     
     var title: String { get }
+
+    var repoName: String { get set }
 }
 
 public enum BuildState {

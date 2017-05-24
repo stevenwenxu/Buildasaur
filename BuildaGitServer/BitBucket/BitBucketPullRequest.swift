@@ -13,7 +13,9 @@ class BitBucketPullRequest: BitBucketIssue, PullRequestType {
     let title: String
     let source: BitBucketPullRequestBranch
     let destination: BitBucketPullRequestBranch
-    
+
+    var repoName = ""
+
     required init(json: NSDictionary) throws {
         
         self.title = try json.stringForKey("title")
