@@ -90,6 +90,14 @@ extension GitHubServer: SourceServerType {
         let context = "Buildasaur"
         return GitHubStatus(state: state, description: description, targetUrl: targetUrl, context: context)
     }
+
+    func approvePR(pr number: Int, repo name: String, completion: (NSError? -> ())) {
+
+    }
+
+    func unApprovePR(pr number: Int, repo name: String, completion: (NSError? -> ())) {
+        
+    }
 }
 
 extension GitHubServer {

@@ -225,6 +225,27 @@ extension BitBucketEnterpriseServer: SourceServerType {
             }
         }
     }
+
+    func approvePR(pr number: Int, repo name: String, completion: (NSError? -> ())) {
+        let params = [
+            "repo": name,
+            "pr": number.description
+        ]
+        _sendRequestWithMethod(.POST, endpoint: .ApprovePR, params: params, query: nil, body: nil) { response, body, error in
+            completion(error)
+        }
+    }
+
+    func unApprovePR(pr number: Int, repo name: String, completion: (NSError? -> ())) {
+        let params = [
+            "repo": name,
+            "pr": number.description
+        ]
+        _sendRequestWithMethod(.DELETE, endpoint: .ApprovePR, params: params, query: nil, body: nil) { response, body, error in
+            completion(error)
+        }
+    }
+
 }
 
 extension BitBucketEnterpriseServer {

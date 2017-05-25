@@ -229,6 +229,15 @@ extension BitBucketServer: SourceServerType {
             }
         }
     }
+
+    func approvePR(pr number: Int, repo name: String, completion: (NSError? -> ())) {
+
+    }
+
+    func unApprovePR(pr number: Int, repo name: String, completion: (NSError? -> ())) {
+
+    }
+
 }
 
 extension BitBucketServer {

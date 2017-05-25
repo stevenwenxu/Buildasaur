@@ -24,8 +24,12 @@ public protocol SourceServerType: BuildStatusCreator {
     func postStatusOfCommit(commit: String, status: StatusType, repo: String, completion: (status: StatusType?, error: ErrorType?) -> ())
     func postCommentOnIssue(comment: String, issueNumber: Int, repo: String, completion: (comment: CommentType?, error: ErrorType?) -> ())
     func getCommentsOfIssue(issueNumber: Int, repo: String, completion: (comments: [CommentType]?, error: ErrorType?) -> ())
-    
+
     func authChangedSignal() -> Signal<ProjectAuthenticator?, NoError>
+
+    func approvePR(pr number: Int, repo name: String, completion: (NSError? -> ()))
+    func unApprovePR(pr number: Int, repo name: String, completion: (NSError? -> ()))
+
 }
 
 public class SourceServerFactory {

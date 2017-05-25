@@ -17,6 +17,7 @@ class BitBucketEnterpriseEndpoints {
         case PullRequests
         case PullRequestComments
         case CommitStatuses
+        case ApprovePR
     }
     
     private let baseURL: String
@@ -67,9 +68,14 @@ class BitBucketEnterpriseEndpoints {
             let sha = params!["sha"]!
             let build = "/rest/build-status/1.0/commits/\(sha)"
             return build
-            
+
+        case .ApprovePR:
+            assert(params?["repo"] != nil, "A repo must be specified")
+            assert(params?["pr"] != nil, "A PR must be specified")
+            return "/rest/api/1.0/projects/\(self.repoEndPointName(params!["repo"]!))/pull-requests/\(params!["pr"]!)/approve"
         }
-        
+
+
     }
     
     func setBasicAuthorizationOnRequest(request: NSMutableURLRequest) {

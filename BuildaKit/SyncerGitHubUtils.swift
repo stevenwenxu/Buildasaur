@@ -76,14 +76,32 @@ extension StandardSyncer {
                         let e = Error.withInfo("Failed to post a comment \"\(comment)\" on Issue \(issue.number) of repo \(repo)", internalError: error as? NSError)
                         completion(error: e)
                     } else {
-                        completion(error: nil)
+
+                        // approve or unapprove the PR
+                        self.toggleApproval(statusWithComment, repo: repo, issue: issue) { error in
+                            if let err = error {
+                                Log.error("Failed to toggle approval for repo: \(repo), PR#: \(issue.number), error: \(err.localizedDescription)")
+                            }
+                            completion(error: error)
+                        }
                     }
                 })
-                
+
             } else {
                 completion(error: nil)
             }
 
+        }
+    }
+
+    func toggleApproval(statusWithComment: StatusAndComment, repo: String, issue: IssueType, completion: SyncPair.Completion) {
+        switch statusWithComment.status.state {
+        case .Success:
+            self._sourceServer.approvePR(pr: issue.number, repo: repo, completion: completion)
+        case .Error, .Failure:
+            self._sourceServer.unApprovePR(pr: issue.number, repo: repo, completion: completion)
+        default:
+            break
         }
     }
 }
