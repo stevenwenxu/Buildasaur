@@ -15,36 +15,29 @@ class SummaryBuilder {
     
     var statusCreator: BuildStatusCreator!
     var lines: [String] = []
-    let resultString: String
     var linkBuilder: (Integration) -> String? = { _ in nil }
     var retestURLBuilder: (() -> String?) = { nil }
-    
-    init() {
-        self.resultString = "*Result*: "
-    }
     
     //MARK: high level
     
     func buildPassing(integration: Integration) -> StatusAndComment {
         
         let linkToIntegration = self.linkBuilder(integration)
-        self.addBaseCommentFromIntegration(integration)
-        
         let status = self.createStatus(.Success, description: "Build passed for Integration #\(integration.number)!", targetUrl: linkToIntegration)
-        
         let buildResultSummary = integration.buildResultSummary!
+
         switch integration.result {
         case .Succeeded?:
-            self.appendTestsPassed(buildResultSummary)
+            self.appendTestsPassed(integration, buildResultSummary: buildResultSummary)
         case .Warnings?, .AnalyzerWarnings?:
             
             switch (buildResultSummary.warningCount, buildResultSummary.analyzerWarningCount) {
             case (_, 0):
-                self.appendWarnings(buildResultSummary)
+                self.appendWarnings(integration, buildResultSummary: buildResultSummary)
             case (0, _):
-                self.appendAnalyzerWarnings(buildResultSummary)
+                self.appendAnalyzerWarnings(integration, buildResultSummary: buildResultSummary)
             default:
-                self.appendWarningsAndAnalyzerWarnings(buildResultSummary)
+                self.appendWarningsAndAnalyzerWarnings(integration, buildResultSummary: buildResultSummary)
             }
             
         default: break
@@ -59,12 +52,10 @@ class SummaryBuilder {
     func buildFailingTests(integration: Integration) -> StatusAndComment {
         
         let linkToIntegration = self.linkBuilder(integration)
-        
-        self.addBaseCommentFromIntegration(integration)
-        
         let status = self.createStatus(.Failure, description: "Build failed tests for Integration #\(integration.number)!", targetUrl: linkToIntegration)
         let buildResultSummary = integration.buildResultSummary!
-        self.appendTestFailure(buildResultSummary)
+
+        self.appendTestFailure(integration, buildResultSummary: buildResultSummary)
         appendRebuildLink()
         return self.buildWithStatus(status)
     }
@@ -72,11 +63,10 @@ class SummaryBuilder {
     func buildErrorredIntegration(integration: Integration) -> StatusAndComment {
         
         let linkToIntegration = self.linkBuilder(integration)
-        self.addBaseCommentFromIntegration(integration)
-        
         let status = self.createStatus(.Error, description: "Build error for Integration #\(integration.number)!", targetUrl: linkToIntegration)
-        
-        self.appendErrors(integration)
+        let buildResultSummary = integration.buildResultSummary!
+
+        self.appendErrors(integration, buildResultSummary: buildResultSummary)
         appendRebuildLink()
         return self.buildWithStatus(status)
     }
@@ -84,9 +74,6 @@ class SummaryBuilder {
     func buildCanceledIntegration(integration: Integration) -> StatusAndComment {
         
         let linkToIntegration = self.linkBuilder(integration)
-        
-        self.addBaseCommentFromIntegration(integration)
-        
         let status = self.createStatus(.Error, description: "Build canceled for Integration #\(integration.number)!", targetUrl: linkToIntegration)
         
         self.appendCancel()
@@ -107,77 +94,88 @@ class SummaryBuilder {
         let status = self.statusCreator.createStatusFromState(state, description: description, targetUrl: targetUrl)
         return status
     }
-    
-    func addBaseCommentFromIntegration(integration: Integration) {
-        
+
+    func getIntegrationText(integration: Integration) -> String {
         var integrationText = "Integration \(integration.number)"
         if let link = self.linkBuilder(integration) {
             //linkify
             integrationText = "[\(integrationText)](\(link))"
         }
-        
-        self.lines.append("Result of \(integrationText)")
-        self.lines.append("---")
-        
+        return "# \(integrationText)"
+    }
+
+    func appendDuration(integration: Integration) {
         if let duration = self.formattedDurationOfIntegration(integration) {
-            self.lines.append("*Duration*: " + duration)
+            self.lines.append("| Duration  | \(duration) |")
         }
     }
-    
-    func appendTestsPassed(buildResultSummary: BuildResultSummary) {
-        
+
+    func appendTestsPassed(integration: Integration, buildResultSummary: BuildResultSummary) {
+        self.lines.append(getIntegrationText(integration) + ": 👍")
+        appendTableHead()
+        appendDuration(integration)
         let testsCount = buildResultSummary.testsCount
-        let testSection = testsCount > 0 ? "All \(testsCount) " + "test".pluralizeStringIfNecessary(testsCount) + " passed. " : ""
-        self.lines.append(self.resultString + "**Perfect build!** \(testSection)👍")
+        let testSection = testsCount >= 0 ? "All \(testsCount) " + "test".pluralizeStringIfNecessary(testsCount) + " passed!" : ""
+        self.lines.append("| Result | \(testSection) |")
     }
     
-    func appendWarnings(buildResultSummary: BuildResultSummary) {
-        
+    func appendWarnings(integration: Integration, buildResultSummary: BuildResultSummary) {
+        self.lines.append(getIntegrationText(integration) + ": ⚠️")
+        appendTableHead()
+        appendDuration(integration)
         let warningCount = buildResultSummary.warningCount
         let testsCount = buildResultSummary.testsCount
-        self.lines.append(self.resultString + "All \(testsCount) tests passed, but please **fix \(warningCount) " + "warning".pluralizeStringIfNecessary(warningCount) + "**.")
+        self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(warningCount) " + "warning".pluralizeStringIfNecessary(warningCount) + "**. |")
     }
     
-    func appendAnalyzerWarnings(buildResultSummary: BuildResultSummary) {
-        
+    func appendAnalyzerWarnings(integration: Integration, buildResultSummary: BuildResultSummary) {
+        self.lines.append(getIntegrationText(integration) + ": ⚠️")
+        appendTableHead()
+        appendDuration(integration)
         let analyzerWarningCount = buildResultSummary.analyzerWarningCount
         let testsCount = buildResultSummary.testsCount
-        self.lines.append(self.resultString + "All \(testsCount) tests passed, but please **fix \(analyzerWarningCount) " + "analyzer warning".pluralizeStringIfNecessary(analyzerWarningCount) + "**.")
+        self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(analyzerWarningCount) " + "analyzer warning".pluralizeStringIfNecessary(analyzerWarningCount) + "**. |")
     }
     
-    func appendWarningsAndAnalyzerWarnings(buildResultSummary: BuildResultSummary) {
-        
+    func appendWarningsAndAnalyzerWarnings(integration: Integration, buildResultSummary: BuildResultSummary) {
+        self.lines.append(getIntegrationText(integration) + ": ⚠️")
+        appendTableHead()
+        appendDuration(integration)
         let warningCount = buildResultSummary.warningCount
         let analyzerWarningCount = buildResultSummary.analyzerWarningCount
         let testsCount = buildResultSummary.testsCount
-        self.lines.append(self.resultString + "All \(testsCount) tests passed, but please **fix \(warningCount) " + "warning".pluralizeStringIfNecessary(warningCount) + "** and **\(analyzerWarningCount) " + "analyzer warning".pluralizeStringIfNecessary(analyzerWarningCount) + "**.")
+        self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(warningCount) " + "warning".pluralizeStringIfNecessary(warningCount) + "** and **\(analyzerWarningCount) " + "analyzer warning".pluralizeStringIfNecessary(analyzerWarningCount) + "**. |")
     }
     
     func appendCodeCoverage(buildResultSummary: BuildResultSummary) {
         
         let codeCoveragePercentage = buildResultSummary.codeCoveragePercentage
         if codeCoveragePercentage > 0 {
-            self.lines.append("*Test Coverage*: \(codeCoveragePercentage)%")
+            self.lines.append("| Test Coverage | \(codeCoveragePercentage)% |")
         }
     }
     
-    func appendTestFailure(buildResultSummary: BuildResultSummary) {
-        
+    func appendTestFailure(integration: Integration, buildResultSummary: BuildResultSummary) {
+        self.lines.append(getIntegrationText(integration) + ": ❌")
+        appendTableHead()
+        appendDuration(integration)
         let testFailureCount = buildResultSummary.testFailureCount
         let testsCount = buildResultSummary.testsCount
-        self.lines.append(self.resultString + "**Build failed \(testFailureCount) " + "test".pluralizeStringIfNecessary(testFailureCount) + "** out of \(testsCount)")
+        self.lines.append("| Result | \(testFailureCount) " + "test".pluralizeStringIfNecessary(testFailureCount) + " out of \(testsCount) failed. |")
     }
     
-    func appendErrors(integration: Integration) {
-        
+    func appendErrors(integration: Integration, buildResultSummary: BuildResultSummary) {
+        self.lines.append(getIntegrationText(integration) + ": ❌")
+        appendTableHead()
+        appendDuration(integration)
         let errorCount: Int = integration.buildResultSummary?.errorCount ?? -1
-        self.lines.append(self.resultString + "**\(errorCount) " + "error".pluralizeStringIfNecessary(errorCount) + ", failing state: \(integration.result!.rawValue)**")
+        self.lines.append("| Result | Build failed. \(errorCount) " + "error".pluralizeStringIfNecessary(errorCount) + ", failing state: \(integration.result!.rawValue). |")
     }
     
     func appendCancel() {
-        
+        appendTableHead()
         //TODO: find out who canceled it and add it to the comment?
-        self.lines.append("Build was **manually canceled**.")
+        self.lines.append("| Result | Build was manually canceled. |")
     }
 
     func appendRebuildLink() {
@@ -187,7 +185,12 @@ class SummaryBuilder {
             self.lines.append("Make a new commit to test again")
         }
     }
-    
+
+    func appendTableHead() {
+        self.lines.append("| | |")
+        self.lines.append("|---|---|")
+    }
+
     func buildWithStatus(status: StatusType) -> StatusAndComment {
         
         let comment: String?
