@@ -7,7 +7,7 @@
     <h1 id="BuildaSocketTitle">Re-running the tests, will go back in 3 seconds...</h1>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
     <script>
-        var socket = io.connect('http://wxu-laptop.local:5000');
+        var socket = io.connect('http://ios-build-03.local:5000');
         var repoName = getParameterByName('repoName');
         var prNumber = parseInt(getParameterByName('prNumber'));
         var isOnPRPage = repoName != null && prNumber != null;

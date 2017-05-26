@@ -286,7 +286,7 @@ public class SyncPairResolver {
 
             summary.retestURLBuilder = {
                 if let issue = issue as? PullRequestType {
-                    return "http://wxu-laptop.local:5000/?repoName=\(issue.repoName)&prNumber=\(issue.number)"
+                    return "http://ios-build-03.local:5000/?repoName=\(issue.repoName)&prNumber=\(issue.number)"
                 } else {
                     return nil
                 }

@@ -119,7 +119,7 @@ class DashboardViewController: PresentableViewController {
     }
 
     func configWebSocket() {
-        socket = SocketIOClient(socketURL: NSURL(string: "http://wxu-laptop.local:5000")!)
+        socket = SocketIOClient(socketURL: NSURL(string: "http://ios-build-03.local:5000")!)
         socket.on("connect") { data, ack in
             Log.info("Socket IO connected")
         }
