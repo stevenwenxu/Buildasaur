@@ -48,8 +48,9 @@ extension ProjectAuthenticator: KeychainStringSerializable {
             throw Error.withInfo("Unsupported auth type: \(comps[2])")
         }
         //join the rest back in case we have ":" in the token
-        let remaining = comps.dropFirst(3).joinWithSeparator(":")
-    
+//        let remaining = comps.dropFirst(3).joinWithSeparator(":")
+        let secret = comps[3]
+
         let service: GitService!
         switch serviceType {
         case .GitHub:
@@ -60,7 +61,7 @@ extension ProjectAuthenticator: KeychainStringSerializable {
             let baseURL = comps[4].stringByRemovingPercentEncoding!
             service = BitBucketEnterpriseService(baseURL:baseURL)
         }
-        let auth = ProjectAuthenticator(service: service, username: comps[1], type: type, secret: remaining)
+        let auth = ProjectAuthenticator(service: service, username: comps[1], type: type, secret: secret)
         return auth
     }
     
