@@ -103,6 +103,7 @@ class BitBucketEnterpriseEndpoints {
         
         request.HTTPMethod = method.rawValue
         self.setBasicAuthorizationOnRequest(request)
+        request.setValue("no-check", forHTTPHeaderField: "X-Atlassian-Token")
         
         if let body = body {
             try self.setJSONBody(request, body: body)
