@@ -46,7 +46,7 @@ class SummaryBuilder {
         //and code coverage
         self.appendCodeCoverage(buildResultSummary)
         
-        return self.buildWithStatus(status)
+        return self.build(with: status, summary: buildResultSummary)
     }
     
     func buildFailingTests(integration: Integration) -> StatusAndComment {
@@ -57,7 +57,7 @@ class SummaryBuilder {
 
         self.appendTestFailure(integration, buildResultSummary: buildResultSummary)
         appendRebuildLink()
-        return self.buildWithStatus(status)
+        return build(with: status, summary: buildResultSummary)
     }
     
     func buildErrorredIntegration(integration: Integration) -> StatusAndComment {
@@ -68,7 +68,7 @@ class SummaryBuilder {
 
         self.appendErrors(integration, buildResultSummary: buildResultSummary)
         appendRebuildLink()
-        return self.buildWithStatus(status)
+        return build(with: status, summary: buildResultSummary)
     }
     
     func buildCanceledIntegration(integration: Integration) -> StatusAndComment {
@@ -78,13 +78,13 @@ class SummaryBuilder {
         
         self.appendCancel()
         appendRebuildLink()
-        return self.buildWithStatus(status)
+        return build(with: status, summary: integration.buildResultSummary)
     }
     
     func buildEmptyIntegration() -> StatusAndComment {
         
         let status = self.createStatus(.NoState, description: nil, targetUrl: nil)
-        return self.buildWithStatus(status)
+        return build(with: status, summary: nil)
     }
     
     //MARK: utils
@@ -126,6 +126,9 @@ class SummaryBuilder {
         let warningCount = buildResultSummary.warningCount
         let testsCount = buildResultSummary.testsCount
         self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(warningCount) " + "warning".pluralizeStringIfNecessary(warningCount) + "**. |")
+        if warningCount > maxWarningsAllowed {
+            self.lines.append("| Message | Reduce the number of warnings to \(maxWarningsAllowed) and I'll approve this! |")
+        }
     }
     
     func appendAnalyzerWarnings(integration: Integration, buildResultSummary: BuildResultSummary) {
@@ -135,8 +138,11 @@ class SummaryBuilder {
         let analyzerWarningCount = buildResultSummary.analyzerWarningCount
         let testsCount = buildResultSummary.testsCount
         self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(analyzerWarningCount) " + "analyzer warning".pluralizeStringIfNecessary(analyzerWarningCount) + "**. |")
+        if analyzerWarningCount > maxWarningsAllowed {
+            self.lines.append("| Message | Reduce the number of warnings to \(maxWarningsAllowed) and I'll approve this! |")
+        }
     }
-    
+
     func appendWarningsAndAnalyzerWarnings(integration: Integration, buildResultSummary: BuildResultSummary) {
         self.lines.append(getIntegrationText(integration) + ": ⚠️")
         appendTableHead()
@@ -145,8 +151,11 @@ class SummaryBuilder {
         let analyzerWarningCount = buildResultSummary.analyzerWarningCount
         let testsCount = buildResultSummary.testsCount
         self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(warningCount) " + "warning".pluralizeStringIfNecessary(warningCount) + "** and **\(analyzerWarningCount) " + "analyzer warning".pluralizeStringIfNecessary(analyzerWarningCount) + "**. |")
+        if warningCount + analyzerWarningCount > maxWarningsAllowed {
+            self.lines.append("| Message | Reduce the number of warnings to \(maxWarningsAllowed) and I'll approve this! |")
+        }
     }
-    
+
     func appendCodeCoverage(buildResultSummary: BuildResultSummary) {
         
         let codeCoveragePercentage = buildResultSummary.codeCoveragePercentage
@@ -191,7 +200,7 @@ class SummaryBuilder {
         self.lines.append("|---|---|")
     }
 
-    func buildWithStatus(status: StatusType) -> StatusAndComment {
+    func build(with status: StatusType, summary: BuildResultSummary?) -> StatusAndComment {
         
         let comment: String?
         if lines.count == 0 {
@@ -199,7 +208,7 @@ class SummaryBuilder {
         } else {
             comment = lines.joinWithSeparator("\n")
         }
-        return StatusAndComment(status: status, comment: comment)
+        return StatusAndComment(status: status, comment: comment, buildResultSummary: summary)
     }
 }
 

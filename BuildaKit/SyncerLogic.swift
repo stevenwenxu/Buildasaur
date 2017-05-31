@@ -14,10 +14,12 @@ import BuildaUtils
 public struct StatusAndComment {
     public let status: StatusType
     public let comment: String?
+    public var buildResultSummary: BuildResultSummary?
     
-    public init(status: StatusType, comment: String? = nil) {
+    public init(status: StatusType, comment: String? = nil, buildResultSummary: BuildResultSummary? = nil) {
         self.status = status
         self.comment = comment
+        self.buildResultSummary = buildResultSummary
     }
 }
 
