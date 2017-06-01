@@ -132,10 +132,10 @@ class SyncerViewController: ConfigEditViewController {
         }
         
         self.setupSyncInterval()
+        self.setupMaxWarningsAllowed()
         self.setupDataSource()
         self.setupGeneratedConfig()
         self.setupSyncerReporting()
-        self.setupMaxWarningsAllowed()
     }
     
     func setupDataSource() {
