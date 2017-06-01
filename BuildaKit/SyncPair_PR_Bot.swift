@@ -77,6 +77,7 @@ public class SyncPair_PR_Bot: SyncPair {
                             hostname: hostname!,
                             buildStatusCreator: self.syncer,
                             retest: self.retest,
+                            syncerConfig: self.syncer.config.value,
                             integrations: integrations)
                         self.performActions(actions, completion: completion)
                     }

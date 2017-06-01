@@ -24,6 +24,7 @@ public class SyncPairResolver {
         hostname: String,
         buildStatusCreator: BuildStatusCreator,
         retest: Bool = false,
+        syncerConfig: SyncerConfig,
         integrations: [Integration]) -> SyncPair.Actions {
             
             var integrationsToCancel: [Integration] = []
@@ -134,7 +135,8 @@ public class SyncPairResolver {
                 running: runningIntegration,
                 link: link,
                 statusCreator: buildStatusCreator,
-                completed: completedIntegrations)
+                completed: completedIntegrations,
+                syncerConfig: syncerConfig)
 
             //merge in nested actions
             return SyncPair.Actions(
@@ -219,7 +221,8 @@ public class SyncPairResolver {
         running: Integration?,
         link: (Integration) -> String?,
         statusCreator: BuildStatusCreator,
-        completed: Set<Integration>) -> SyncPair.Actions {
+        completed: Set<Integration>,
+        syncerConfig: SyncerConfig) -> SyncPair.Actions {
             
             let statusWithComment: StatusAndComment
             var integrationsToCancel: [Integration] = []
@@ -253,7 +256,7 @@ public class SyncPairResolver {
                     if completed.count > 0 {
                         
                         //we have some completed integrations
-                        statusWithComment = self.resolveStatusFromCompletedIntegrations(completed, statusCreator: statusCreator, link: link, issue: issue)
+                        statusWithComment = self.resolveStatusFromCompletedIntegrations(completed, statusCreator: statusCreator, link: link, issue: issue, syncerConfig: syncerConfig)
                         
                     } else {
                         //this shouldn't happen.
@@ -275,7 +278,8 @@ public class SyncPairResolver {
         integrations: Set<Integration>,
         statusCreator: BuildStatusCreator,
         link: (Integration) -> String?,
-        issue: IssueType?
+        issue: IssueType?,
+        syncerConfig: SyncerConfig
         ) -> StatusAndComment {
             
             //get integrations sorted by number
@@ -283,6 +287,7 @@ public class SyncPairResolver {
             let summary = SummaryBuilder()
             summary.linkBuilder = link
             summary.statusCreator = statusCreator
+            summary.syncerConfig = syncerConfig
 
             summary.retestURLBuilder = {
                 if let issue = issue as? PullRequestType {

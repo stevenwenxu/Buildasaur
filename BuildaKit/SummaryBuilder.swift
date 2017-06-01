@@ -17,11 +17,16 @@ class SummaryBuilder {
     var lines: [String] = []
     var linkBuilder: (Integration) -> String? = { _ in nil }
     var retestURLBuilder: (() -> String?) = { nil }
-    
+    var syncerConfig: SyncerConfig!
+
+    var maxWarningsAllowed: Int {
+        return syncerConfig.maxWarningsAllowed
+    }
+
     //MARK: high level
     
     func buildPassing(integration: Integration) -> StatusAndComment {
-        
+
         let linkToIntegration = self.linkBuilder(integration)
         let status = self.createStatus(.Success, description: "Build passed for Integration #\(integration.number)!", targetUrl: linkToIntegration)
         let buildResultSummary = integration.buildResultSummary!
@@ -128,6 +133,8 @@ class SummaryBuilder {
         self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(warningCount) " + "warning".pluralizeStringIfNecessary(warningCount) + "**. |")
         if warningCount > maxWarningsAllowed {
             self.lines.append("| Message | Reduce the number of warnings to \(maxWarningsAllowed) and I'll approve this! |")
+        } else if warningCount > 0 {
+            self.lines.append("| Message | We are temporarily allowing \(maxWarningsAllowed) " + "warning".pluralizeStringIfNecessary(maxWarningsAllowed) + ", you're good! |")
         }
     }
     
@@ -140,6 +147,8 @@ class SummaryBuilder {
         self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(analyzerWarningCount) " + "analyzer warning".pluralizeStringIfNecessary(analyzerWarningCount) + "**. |")
         if analyzerWarningCount > maxWarningsAllowed {
             self.lines.append("| Message | Reduce the number of warnings to \(maxWarningsAllowed) and I'll approve this! |")
+        } else if analyzerWarningCount > 0 {
+            self.lines.append("| Message | We are temporarily allowing \(maxWarningsAllowed) " + "warning".pluralizeStringIfNecessary(maxWarningsAllowed) + ", you're good! |")
         }
     }
 
@@ -153,6 +162,8 @@ class SummaryBuilder {
         self.lines.append("| Result | All \(testsCount) tests passed, but please **fix \(warningCount) " + "warning".pluralizeStringIfNecessary(warningCount) + "** and **\(analyzerWarningCount) " + "analyzer warning".pluralizeStringIfNecessary(analyzerWarningCount) + "**. |")
         if warningCount + analyzerWarningCount > maxWarningsAllowed {
             self.lines.append("| Message | Reduce the number of warnings to \(maxWarningsAllowed) and I'll approve this! |")
+        } else if warningCount + analyzerWarningCount > 0 {
+            self.lines.append("| Message | We are temporarily allowing \(maxWarningsAllowed) " + "warning".pluralizeStringIfNecessary(maxWarningsAllowed) + ", you're good! |")
         }
     }
 

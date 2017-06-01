@@ -10,8 +10,6 @@ import Foundation
 import BuildaGitServer
 import BuildaUtils
 
-let maxWarningsAllowed = 0
-
 extension StandardSyncer: BuildStatusCreator {
     
     public func createStatusFromState(state: BuildState, description: String?, targetUrl: String?) -> StatusType {
@@ -98,7 +96,7 @@ extension StandardSyncer {
 
     func toggleApproval(statusWithComment: StatusAndComment, repo: String, issue: IssueType, completion: SyncPair.Completion) {
         if let buildSummary = statusWithComment.buildResultSummary {
-            let shouldApprove = buildSummary.warningCount + buildSummary.analyzerWarningCount <= maxWarningsAllowed
+            let shouldApprove = buildSummary.warningCount + buildSummary.analyzerWarningCount <= self.config.value.maxWarningsAllowed
 
             switch statusWithComment.status.state {
             case .Success where shouldApprove:

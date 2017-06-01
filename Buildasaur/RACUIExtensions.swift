@@ -55,6 +55,7 @@ struct AssociationKey {
     static var on_action: UInt8 = 8
     static var placeholder: UInt8 = 9
     static var doubleValue: UInt8 = 10
+    static var integerValue: UInt8 = 11
 }
 
 //the good stuff
@@ -71,6 +72,10 @@ extension NSTextField {
     
     public var rac_placeholderString: MutableProperty<String?> {
         return lazyMutableProperty(self, key: &AssociationKey.placeholder, setter: { [weak self] in self?.placeholderString = $0 }, getter: { [weak self] in self?.placeholderString })
+    }
+
+    public var rac_integerValue: MutableProperty<Int> {
+        return lazyMutableProperty(self, key: &AssociationKey.integerValue, setter: { [weak self] in self?.integerValue = $0 }, getter: { [weak self] in self?.integerValue ?? 0 })
     }
 }
 

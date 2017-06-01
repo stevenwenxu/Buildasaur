@@ -51,12 +51,17 @@ class SyncerViewController: ConfigEditViewController {
     @IBOutlet weak var manualBotManagementButton: NSButton!
     @IBOutlet weak var branchWatchingButton: NSButton!
     
+    @IBOutlet weak var maxWarningsAllowedTextField: NSTextField!
+    @IBOutlet weak var maxWarningsStepper: NSStepper!
+
     private let isSyncing = MutableProperty<Bool>(false)
     
     private let syncInterval = MutableProperty<Double>(15)
     private let watchedBranches = MutableProperty<[String]>([])
     
     private let generatedConfig = MutableProperty<SyncerConfig!>(nil)
+
+    private let maxWarningsAllowed = MutableProperty<Int>(0)
     
     //----
     
@@ -111,6 +116,8 @@ class SyncerViewController: ConfigEditViewController {
         self.syncIntervalStepper.rac_enabled <~ editing
         self.lttmToggle.rac_enabled <~ editing
         self.postStatusCommentsToggle.rac_enabled <~ editing
+
+        self.maxWarningsStepper.rac_enabled <~ editing
         
         //initial dump
         self.syncerConfig.producer.startWithNext { [weak self] config in
@@ -120,12 +127,15 @@ class SyncerViewController: ConfigEditViewController {
             sself.lttmToggle.on = config.waitForLttm
             sself.postStatusCommentsToggle.on = config.postStatusComments
             sself.watchedBranches.value = config.watchedBranchNames
+            sself.maxWarningsAllowed.value = config.maxWarningsAllowed
+            sself.maxWarningsStepper.integerValue = config.maxWarningsAllowed
         }
         
         self.setupSyncInterval()
         self.setupDataSource()
         self.setupGeneratedConfig()
         self.setupSyncerReporting()
+        self.setupMaxWarningsAllowed()
     }
     
     func setupDataSource() {
@@ -145,23 +155,26 @@ class SyncerViewController: ConfigEditViewController {
         let postStatusComments = self.postStatusCommentsToggle.rac_on
         let syncInterval = self.syncInterval.producer
         let watchedBranches = self.watchedBranches.producer
+        let maxWarningsAllowed = self.maxWarningsAllowed.producer
         
         let combined = combineLatest(
             original,
             waitForLttm,
             postStatusComments,
             syncInterval,
-            watchedBranches
+            watchedBranches,
+            maxWarningsAllowed
         )
         
         let generated = combined.map {
-            (original, waitForLttm, postStatusComments, syncInterval, watchedBranches) -> SyncerConfig in
+            (original, waitForLttm, postStatusComments, syncInterval, watchedBranches, maxWarningsAllowed) -> SyncerConfig in
             
             var newConfig = original
             newConfig.waitForLttm = waitForLttm
             newConfig.postStatusComments = postStatusComments
             newConfig.syncInterval = syncInterval
             newConfig.watchedBranchNames = watchedBranches
+            newConfig.maxWarningsAllowed = maxWarningsAllowed
             return newConfig
         }
         self.generatedConfig <~ generated.map { Optional($0) }
@@ -195,6 +208,23 @@ class SyncerViewController: ConfigEditViewController {
         }
         let action = Action { (_: AnyObject?) in handler }
         self.syncIntervalStepper.rac_command = toRACCommand(action)
+    }
+
+    func setupMaxWarningsAllowed() {
+        self.maxWarningsAllowedTextField.rac_integerValue <~ self.maxWarningsAllowed
+        let handler = SignalProducer<AnyObject, NoError> { [weak self] sink, _ in
+            if let sself = self {
+                let value = sself.maxWarningsStepper.integerValue
+                if value < 0 {
+                    UIUtils.showAlertWithText("Max warnings allowed should be non negative integer")
+                    sself.maxWarningsStepper.integerValue = 1
+                } else {
+                    sself.maxWarningsAllowed.value = value
+                }
+            }
+            sink.sendCompleted()
+        }
+        self.maxWarningsStepper.rac_command = toRACCommand(Action { (_: AnyObject?) in handler })
     }
     
     override func delete() {

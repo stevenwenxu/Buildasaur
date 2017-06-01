@@ -54,6 +54,7 @@ public struct SyncerConfig {
     public var syncInterval: NSTimeInterval
     public var waitForLttm: Bool
     public var watchedBranchNames: [String]
+    public var maxWarningsAllowed: Int
     
     //creates a default syncer config
     public init() {
@@ -65,6 +66,7 @@ public struct SyncerConfig {
         self.syncInterval = 15
         self.waitForLttm = false
         self.watchedBranchNames = []
+        self.maxWarningsAllowed = 0
     }
 }
 
@@ -79,6 +81,7 @@ private struct Keys {
     static let SyncInterval = "sync_interval"
     static let WaitForLttm = "wait_for_lttm"
     static let WatchedBranches = "watched_branches"
+    static let MaxWarningsAllowed = "max_warnings_allowed"
 }
 
 extension SyncerConfig: JSONSerializable {
@@ -92,7 +95,8 @@ extension SyncerConfig: JSONSerializable {
             Keys.PostStatusComments: self.postStatusComments,
             Keys.SyncInterval: self.syncInterval,
             Keys.WaitForLttm: self.waitForLttm,
-            Keys.WatchedBranches: self.watchedBranchNames
+            Keys.WatchedBranches: self.watchedBranchNames,
+            Keys.MaxWarningsAllowed: self.maxWarningsAllowed
         ]
     }
     
@@ -105,5 +109,6 @@ extension SyncerConfig: JSONSerializable {
         self.waitForLttm = try json.get(Keys.WaitForLttm)
         self.watchedBranchNames = try json.get(Keys.WatchedBranches)
         self.id = try json.getOptionally(Keys.Id) ?? Ref.new()
+        self.maxWarningsAllowed = try json.get(Keys.MaxWarningsAllowed)
     }
 }
