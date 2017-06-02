@@ -29,7 +29,9 @@ class SummaryBuilder {
 
         let linkToIntegration = self.linkBuilder(integration)
         let status = self.createStatus(.Success, description: "Build passed for Integration #\(integration.number)!", targetUrl: linkToIntegration)
-        let buildResultSummary = integration.buildResultSummary!
+        guard let buildResultSummary = integration.buildResultSummary else {
+            return StatusAndComment(status: status, comment: "Oops! Looks like this PR is fine but Buildasaur crashed. Please delete your Buildabot from Xcode and wait for another fresh integration.", buildResultSummary: nil)
+        }
 
         switch integration.result {
         case .Succeeded?:
@@ -58,7 +60,9 @@ class SummaryBuilder {
         
         let linkToIntegration = self.linkBuilder(integration)
         let status = self.createStatus(.Failure, description: "Build failed tests for Integration #\(integration.number)!", targetUrl: linkToIntegration)
-        let buildResultSummary = integration.buildResultSummary!
+        guard let buildResultSummary = integration.buildResultSummary else {
+            return StatusAndComment(status: status, comment: "Oops! Looks like this PR has failing tests and Buildasaur crashed. Please delete your Buildabot from Xcode and wait for another fresh integration.", buildResultSummary: nil)
+        }
 
         self.appendTestFailure(integration, buildResultSummary: buildResultSummary)
         appendRebuildLink()
@@ -69,7 +73,9 @@ class SummaryBuilder {
         
         let linkToIntegration = self.linkBuilder(integration)
         let status = self.createStatus(.Error, description: "Build error for Integration #\(integration.number)!", targetUrl: linkToIntegration)
-        let buildResultSummary = integration.buildResultSummary!
+        guard let buildResultSummary = integration.buildResultSummary else {
+            return StatusAndComment(status: status, comment: "Oops! Looks like this PR can't build and Buildasaur crashed. Please delete your Buildabot from Xcode and wait for another fresh integration.", buildResultSummary: nil)
+        }
 
         self.appendErrors(integration, buildResultSummary: buildResultSummary)
         appendRebuildLink()
